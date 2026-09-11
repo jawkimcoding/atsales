@@ -269,8 +269,8 @@ export function triggerBlobDownload(blob, fileName) {
  */
 export async function downloadComprehensiveExcel(fileName = "(aT&KPC) 실적취합양식_2026 aT농산물온라인마케터_분석(8월)_대시보드포함.xlsx") {
   try {
-    const fileUrl = `./aT_2026_sales_report_august.xlsx`;
-    const resp = await fetch(fileUrl);
+    const fileUrl = `./aT_2026_sales_report_august.xlsx?v=${Date.now()}`;
+    const resp = await fetch(fileUrl, { cache: 'no-store' });
     if (resp.ok) {
       const blob = await resp.blob();
       triggerBlobDownload(blob, fileName);
