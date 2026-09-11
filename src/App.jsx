@@ -192,9 +192,9 @@ export default function App() {
               }`}
             >
               <AlertTriangle className="w-3.5 h-3.5" />
-              <span>🚨 품목분류 변경 리포트</span>
+              <span>🚨 이상치 및 규정검토 리포트</span>
               <span className="text-[10px] px-1.5 py-0.2 bg-rose-700 text-white rounded-full">
-                {ITEM_ANOMALIES.length}건
+                이상치 42건 & 규정검토
               </span>
             </button>
           </div>
