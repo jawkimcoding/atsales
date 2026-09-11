@@ -1,0 +1,28 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, 'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo', 'Malgun Gothic', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', sans-serif;
+}
+
+.excel-border {
+  border: 1px solid #d9d9d9;
+}
+
+.excel-header {
+  background-color: #FFFFF2CC;
+  font-weight: 700;
+  text-align: center;
+}
+
+.excel-title-yellow {
+  background-color: #FEF08A;
+}
+
+/* 콤팩트 테이블 스타일 */
+table.excel-table th, table.excel-table td {
+  padding: 6px 10px;
+  font-size: 0.84rem;
+  line-height: 1.25rem;
+}
