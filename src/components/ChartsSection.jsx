@@ -10,7 +10,7 @@ import {
   ArcElement
 } from 'chart.js';
 import { Bar, Pie } from 'react-chartjs-2';
-import { CHANNELS, CATEGORIES } from '../data/initialData';
+import { CATEGORIES } from '../data/initialData';
 
 ChartJS.register(
   CategoryScale,
@@ -22,12 +22,16 @@ ChartJS.register(
   ArcElement
 );
 
-export default function ChartsSection({ currentMonth, data }) {
-  const salesByChannel = CHANNELS.map(ch => data.table3[currentMonth]?.[ch] || 0);
-  const couponByChannel = CHANNELS.map(ch => data.table2[currentMonth]?.[ch] || 0);
+export default function ChartsSection({
+  currentMonth,
+  data,
+  channels = ["네이버", "지마켓", "롯데ON", "온누리마켓", "농가살리기", "오아시스"]
+}) {
+  const salesByChannel = channels.map(ch => data.table3[currentMonth]?.[ch] || 0);
+  const couponByChannel = channels.map(ch => data.table2[currentMonth]?.[ch] || 0);
 
   const barData = {
-    labels: CHANNELS,
+    labels: channels,
     datasets: [
       {
         label: '매출액 (원)',
@@ -58,11 +62,11 @@ export default function ChartsSection({ currentMonth, data }) {
     ]
   };
 
-  const sales7 = CHANNELS.map(ch => data.table3["7월"]?.[ch] || 0);
-  const sales8 = CHANNELS.map(ch => data.table3["8월"]?.[ch] || 0);
+  const sales7 = channels.map(ch => data.table3["7월"]?.[ch] || 0);
+  const sales8 = channels.map(ch => data.table3["8월"]?.[ch] || 0);
 
   const compareBarData = {
-    labels: CHANNELS,
+    labels: channels,
     datasets: [
       {
         label: '7월 매출액',
@@ -114,15 +118,8 @@ export default function ChartsSection({ currentMonth, data }) {
               responsive: true,
               maintainAspectRatio: false,
               plugins: {
-                tooltip: {
-                  callbacks: {
-                    label: context => {
-                      const val = context.raw || 0;
-                      const total = salesByCat.reduce((a, b) => a + b, 0);
-                      const pct = total > 0 ? ((val / total) * 100).toFixed(1) : 0;
-                      return `${context.label}: ${val.toLocaleString()}원 (${pct}%)`;
-                    }
-                  }
+                legend: {
+                  position: 'bottom'
                 }
               }
             }}
@@ -132,7 +129,7 @@ export default function ChartsSection({ currentMonth, data }) {
 
       <div className="lg:col-span-3 bg-white rounded-xl border border-slate-200 p-5 shadow-sm">
         <h4 className="font-bold text-slate-800 text-sm mb-4">
-          7월 대비 8월 유통사별 매출 성장 추이 (차감 전후 비교)
+          유통사별 7월 vs 8월 순수 매출 증감 비교
         </h4>
         <div className="h-64">
           <Bar

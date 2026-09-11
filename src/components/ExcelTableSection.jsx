@@ -1,19 +1,26 @@
 import React from 'react';
-import { CHANNELS, CATEGORIES, COUPON_ASSIGNED } from '../data/initialData';
+import { CATEGORIES } from '../data/initialData';
 
-export default function ExcelTableSection({ data, months }) {
-  const cumCoupons = data.table2["누적"] || {};
+export default function ExcelTableSection({
+  data,
+  months = ["7월", "8월"],
+  channels = ["네이버", "지마켓", "롯데ON", "온누리마켓", "농가살리기", "오아시스"],
+  couponAssigned = { "총 계": 640000000 },
+  sectionTitle = "※ 농산물 온라인 마케터",
+  badgeBg = "bg-yellow-300"
+}) {
+  const cumCoupons = data.table2?.["누적"] || {};
   const remainCoupons = {};
-  CHANNELS.forEach(ch => {
-    remainCoupons[ch] = (COUPON_ASSIGNED[ch] || 0) - (cumCoupons[ch] || 0);
+  channels.forEach(ch => {
+    remainCoupons[ch] = (couponAssigned[ch] || 0) - (cumCoupons[ch] || 0);
   });
-  remainCoupons["총 계"] = COUPON_ASSIGNED["총 계"] - (cumCoupons["총 계"] || 0);
+  remainCoupons["총 계"] = (couponAssigned["총 계"] || 0) - (cumCoupons["총 계"] || 0);
 
   return (
     <div className="space-y-8">
       <div className="flex items-center gap-3">
-        <span className="inline-block px-3 py-1 bg-yellow-300 font-bold text-slate-900 text-sm rounded shadow-sm">
-          ※ 농산물 온라인 마케터
+        <span className={`inline-block px-3 py-1 ${badgeBg} font-bold text-slate-900 text-sm rounded shadow-sm`}>
+          {sectionTitle}
         </span>
         <span className="text-xs text-slate-500 font-medium">
           (엑셀 원본 분석 시트와 100% 동일한 양식 및 누적 차감 집계 수식 적용)
@@ -28,7 +35,7 @@ export default function ExcelTableSection({ data, months }) {
             <tr className="excel-header">
               <th className="excel-border border border-slate-300" colSpan={2}>구분</th>
               <th className="excel-border border border-slate-300">총 계</th>
-              {CHANNELS.map(ch => (
+              {channels.map(ch => (
                 <th key={ch} className="excel-border border border-slate-300">{ch}</th>
               ))}
             </tr>
@@ -44,9 +51,9 @@ export default function ExcelTableSection({ data, months }) {
                   <td className="excel-border border border-slate-300 text-right font-medium">
                     {data.table1[m]?.vendor?.["총 계"]?.toLocaleString()}
                   </td>
-                  {CHANNELS.map(ch => (
+                  {channels.map(ch => (
                     <td key={ch} className="excel-border border border-slate-300 text-right font-medium">
-                      {data.table1[m]?.vendor?.[ch]?.toLocaleString()}
+                      {data.table1[m]?.vendor?.[ch]?.toLocaleString() || 0}
                     </td>
                   ))}
                 </tr>
@@ -55,9 +62,9 @@ export default function ExcelTableSection({ data, months }) {
                   <td className="excel-border border border-slate-300 text-right font-medium text-emerald-700 bg-emerald-50/40">
                     {data.table1[m]?.product?.["총 계"]?.toLocaleString()}
                   </td>
-                  {CHANNELS.map(ch => (
+                  {channels.map(ch => (
                     <td key={ch} className="excel-border border border-slate-300 text-right font-medium text-emerald-700 bg-emerald-50/40">
-                      {data.table1[m]?.product?.[ch]?.toLocaleString()}
+                      {data.table1[m]?.product?.[ch]?.toLocaleString() || 0}
                     </td>
                   ))}
                 </tr>
@@ -75,7 +82,7 @@ export default function ExcelTableSection({ data, months }) {
             <tr className="excel-header">
               <th className="excel-border border border-slate-300" colSpan={2}>구분</th>
               <th className="excel-border border border-slate-300">총 계</th>
-              {CHANNELS.map(ch => (
+              {channels.map(ch => (
                 <th key={ch} className="excel-border border border-slate-300">{ch}</th>
               ))}
             </tr>
@@ -86,7 +93,7 @@ export default function ExcelTableSection({ data, months }) {
               <td className="excel-border border border-slate-300 text-right">
                 {data.table2["누적"]?.["총 계"]?.toLocaleString()}
               </td>
-              {CHANNELS.map(ch => (
+              {channels.map(ch => (
                 <td key={ch} className="excel-border border border-slate-300 text-right">
                   {data.table2["누적"]?.[ch]?.toLocaleString()}
                 </td>
@@ -100,30 +107,30 @@ export default function ExcelTableSection({ data, months }) {
                 <td className="excel-border border border-slate-300 text-right font-semibold">
                   {data.table2[m]?.["총 계"]?.toLocaleString()}
                 </td>
-                {CHANNELS.map(ch => (
+                {channels.map(ch => (
                   <td key={ch} className="excel-border border border-slate-300 text-right">
                     {data.table2[m]?.[ch]?.toLocaleString()}
                   </td>
                 ))}
               </tr>
             ))}
-            <tr className="font-bold text-slate-700 bg-slate-50">
-              <td className="excel-border border border-slate-300 text-center" colSpan={2}>쿠폰 배정액</td>
+            <tr className="bg-slate-50/70 font-semibold text-slate-600">
+              <td className="excel-border border border-slate-300 text-center" colSpan={2}>배정액</td>
               <td className="excel-border border border-slate-300 text-right">
-                {COUPON_ASSIGNED["총 계"]?.toLocaleString()}
+                {couponAssigned["총 계"]?.toLocaleString()}
               </td>
-              {CHANNELS.map(ch => (
+              {channels.map(ch => (
                 <td key={ch} className="excel-border border border-slate-300 text-right">
-                  {COUPON_ASSIGNED[ch]?.toLocaleString()}
+                  {couponAssigned[ch]?.toLocaleString()}
                 </td>
               ))}
             </tr>
-            <tr className="font-bold text-blue-800 bg-blue-50/50">
-              <td className="excel-border border border-slate-300 text-center" colSpan={2}>잔여금액</td>
+            <tr className="bg-slate-50/70 font-bold text-slate-800">
+              <td className="excel-border border border-slate-300 text-center" colSpan={2}>잔여액</td>
               <td className="excel-border border border-slate-300 text-right">
                 {remainCoupons["총 계"]?.toLocaleString()}
               </td>
-              {CHANNELS.map(ch => (
+              {channels.map(ch => (
                 <td key={ch} className="excel-border border border-slate-300 text-right">
                   {remainCoupons[ch]?.toLocaleString()}
                 </td>
@@ -141,7 +148,7 @@ export default function ExcelTableSection({ data, months }) {
             <tr className="excel-header">
               <th className="excel-border border border-slate-300" colSpan={2}>구분</th>
               <th className="excel-border border border-slate-300">총 계</th>
-              {CHANNELS.map(ch => (
+              {channels.map(ch => (
                 <th key={ch} className="excel-border border border-slate-300">{ch}</th>
               ))}
             </tr>
@@ -149,11 +156,11 @@ export default function ExcelTableSection({ data, months }) {
           <tbody>
             <tr className="bg-[#FFFFF2CC] font-bold">
               <td className="excel-border border border-slate-300 text-center" colSpan={2}>총 계 (누적)</td>
-              <td className="excel-border border border-slate-300 text-right text-emerald-800">
+              <td className="excel-border border border-slate-300 text-right">
                 {data.table3["누적"]?.["총 계"]?.toLocaleString()}
               </td>
-              {CHANNELS.map(ch => (
-                <td key={ch} className="excel-border border border-slate-300 text-right text-emerald-800">
+              {channels.map(ch => (
+                <td key={ch} className="excel-border border border-slate-300 text-right">
                   {data.table3["누적"]?.[ch]?.toLocaleString()}
                 </td>
               ))}
@@ -166,7 +173,7 @@ export default function ExcelTableSection({ data, months }) {
                 <td className="excel-border border border-slate-300 text-right font-semibold">
                   {data.table3[m]?.["총 계"]?.toLocaleString()}
                 </td>
-                {CHANNELS.map(ch => (
+                {channels.map(ch => (
                   <td key={ch} className="excel-border border border-slate-300 text-right">
                     {data.table3[m]?.[ch]?.toLocaleString()}
                   </td>
@@ -185,7 +192,7 @@ export default function ExcelTableSection({ data, months }) {
             <tr className="excel-header">
               <th className="excel-border border border-slate-300" colSpan={2}>구분</th>
               <th className="excel-border border border-slate-300">총 계</th>
-              {CHANNELS.map(ch => (
+              {channels.map(ch => (
                 <th key={ch} className="excel-border border border-slate-300">{ch}</th>
               ))}
             </tr>
@@ -196,7 +203,7 @@ export default function ExcelTableSection({ data, months }) {
               <td className="excel-border border border-slate-300 text-right">
                 {data.table4["누적"]?.["총 계"]?.toLocaleString()}
               </td>
-              {CHANNELS.map(ch => (
+              {channels.map(ch => (
                 <td key={ch} className="excel-border border border-slate-300 text-right">
                   {data.table4["누적"]?.[ch]?.toLocaleString()}
                 </td>
@@ -210,7 +217,7 @@ export default function ExcelTableSection({ data, months }) {
                 <td className="excel-border border border-slate-300 text-right font-semibold">
                   {data.table4[m]?.["총 계"]?.toLocaleString()}
                 </td>
-                {CHANNELS.map(ch => (
+                {channels.map(ch => (
                   <td key={ch} className="excel-border border border-slate-300 text-right">
                     {data.table4[m]?.[ch]?.toLocaleString()}
                   </td>
@@ -221,89 +228,152 @@ export default function ExcelTableSection({ data, months }) {
         </table>
       </div>
 
-      {/* 5, 6, 7. 품목별 세부 분석 */}
-      {[
-        { title: "5. 유통사별 품목별 쿠폰 사용액", tableKey: "table5" },
-        { title: "6. 유통사별 품목별 매출 분석", tableKey: "table6" },
-        { title: "7. 유통사별 품목별 판매 건수", tableKey: "table7" }
-      ].map(({ title, tableKey }) => {
-        const tableData = data[tableKey];
-        const cumTotal = {};
-        CHANNELS.forEach(ch => {
-          cumTotal[ch] = CATEGORIES.reduce((sum, cat) => sum + (tableData[cat]?.["누적"]?.[ch] || 0), 0);
-        });
-        const cumGrandTotal = CATEGORIES.reduce((sum, cat) => sum + (tableData[cat]?.["누적"]?.["소 계"] || 0), 0);
-
-        return (
-          <div key={tableKey} className="bg-white rounded-xl border border-slate-200 shadow-sm p-4 overflow-x-auto">
-            <h3 className="font-bold text-slate-800 text-sm mb-3">{title}</h3>
-            <table className="excel-table w-full border-collapse border border-slate-300 text-sm">
-              <thead>
-                <tr className="excel-header">
-                  <th className="excel-border border border-slate-300">품목</th>
-                  <th className="excel-border border border-slate-300">구분</th>
-                  <th className="excel-border border border-slate-300">총 계</th>
-                  {CHANNELS.map(ch => (
-                    <th key={ch} className="excel-border border border-slate-300">{ch}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
+      {/* 5. 품목별 쿠폰 사용액 */}
+      <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-4 overflow-x-auto">
+        <h3 className="font-bold text-slate-800 text-sm mb-3">5. 유통사별 품목별 쿠폰 사용액</h3>
+        <table className="excel-table w-full border-collapse border border-slate-300 text-sm">
+          <thead>
+            <tr className="excel-header">
+              <th className="excel-border border border-slate-300" colSpan={2}>구분</th>
+              <th className="excel-border border border-slate-300">소 계</th>
+              {channels.map(ch => (
+                <th key={ch} className="excel-border border border-slate-300">{ch}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {CATEGORIES.map(cat => (
+              <React.Fragment key={cat}>
                 <tr className="bg-[#FFFFF2CC] font-bold">
-                  <td className="excel-border border border-slate-300 text-center" colSpan={2}>총 계 (누적)</td>
-                  <td className="excel-border border border-slate-300 text-right">
-                    {cumGrandTotal.toLocaleString()}
+                  <td className="excel-border border border-slate-300 font-bold text-center bg-slate-100" rowSpan={months.length + 1}>
+                    {cat}
                   </td>
-                  {CHANNELS.map(ch => (
+                  <td className="excel-border border border-slate-300 text-center font-bold">누적</td>
+                  <td className="excel-border border border-slate-300 text-right">
+                    {data.table5[cat]?.["누적"]?.["소 계"]?.toLocaleString()}
+                  </td>
+                  {channels.map(ch => (
                     <td key={ch} className="excel-border border border-slate-300 text-right">
-                      {cumTotal[ch]?.toLocaleString()}
+                      {data.table5[cat]?.["누적"]?.[ch]?.toLocaleString()}
                     </td>
                   ))}
                 </tr>
-                {CATEGORIES.map(cat => {
-                  const catData = tableData[cat] || {};
-                  return (
-                    <React.Fragment key={cat}>
-                      <tr className="font-bold bg-slate-50/80">
-                        <td
-                          className="excel-border border border-slate-300 font-bold text-center align-middle bg-slate-100"
-                          rowSpan={months.length + 1}
-                        >
-                          {cat}
-                        </td>
-                        <td className="excel-border border border-slate-300 text-center">소 계</td>
-                        <td className="excel-border border border-slate-300 text-right">
-                          {catData["누적"]?.["소 계"]?.toLocaleString()}
-                        </td>
-                        {CHANNELS.map(ch => (
-                          <td key={ch} className="excel-border border border-slate-300 text-right">
-                            {catData["누적"]?.[ch]?.toLocaleString()}
-                          </td>
-                        ))}
-                      </tr>
-                      {months.map(m => (
-                        <tr key={m} className="hover:bg-slate-50/50">
-                          <td className="excel-border border border-slate-300 text-center text-slate-600 font-medium">
-                            {m}
-                          </td>
-                          <td className="excel-border border border-slate-300 text-right font-medium">
-                            {catData[m]?.["소 계"]?.toLocaleString()}
-                          </td>
-                          {CHANNELS.map(ch => (
-                            <td key={ch} className="excel-border border border-slate-300 text-right text-slate-700">
-                              {catData[m]?.[ch]?.toLocaleString()}
-                            </td>
-                          ))}
-                        </tr>
-                      ))}
-                    </React.Fragment>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-        );
-      })}
+                {months.map(m => (
+                  <tr key={m}>
+                    <td className="excel-border border border-slate-300 text-center">{m}</td>
+                    <td className="excel-border border border-slate-300 text-right font-medium">
+                      {data.table5[cat]?.[m]?.["소 계"]?.toLocaleString()}
+                    </td>
+                    {channels.map(ch => (
+                      <td key={ch} className="excel-border border border-slate-300 text-right">
+                        {data.table5[cat]?.[m]?.[ch]?.toLocaleString()}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </React.Fragment>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* 6. 품목별 매출 분석 */}
+      <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-4 overflow-x-auto">
+        <h3 className="font-bold text-slate-800 text-sm mb-3">6. 유통사별 품목별 매출 분석</h3>
+        <table className="excel-table w-full border-collapse border border-slate-300 text-sm">
+          <thead>
+            <tr className="excel-header">
+              <th className="excel-border border border-slate-300" colSpan={2}>구분</th>
+              <th className="excel-border border border-slate-300">소 계</th>
+              {channels.map(ch => (
+                <th key={ch} className="excel-border border border-slate-300">{ch}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {CATEGORIES.map(cat => (
+              <React.Fragment key={cat}>
+                <tr className="bg-[#FFFFF2CC] font-bold">
+                  <td className="excel-border border border-slate-300 font-bold text-center bg-slate-100" rowSpan={months.length + 1}>
+                    {cat}
+                  </td>
+                  <td className="excel-border border border-slate-300 text-center font-bold">누적</td>
+                  <td className="excel-border border border-slate-300 text-right">
+                    {data.table6[cat]?.["누적"]?.["소 계"]?.toLocaleString()}
+                  </td>
+                  {channels.map(ch => (
+                    <td key={ch} className="excel-border border border-slate-300 text-right">
+                      {data.table6[cat]?.["누적"]?.[ch]?.toLocaleString()}
+                    </td>
+                  ))}
+                </tr>
+                {months.map(m => (
+                  <tr key={m}>
+                    <td className="excel-border border border-slate-300 text-center">{m}</td>
+                    <td className="excel-border border border-slate-300 text-right font-medium">
+                      {data.table6[cat]?.[m]?.["소 계"]?.toLocaleString()}
+                    </td>
+                    {channels.map(ch => (
+                      <td key={ch} className="excel-border border border-slate-300 text-right">
+                        {data.table6[cat]?.[m]?.[ch]?.toLocaleString()}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </React.Fragment>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* 7. 품목별 판매 건수 */}
+      <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-4 overflow-x-auto">
+        <h3 className="font-bold text-slate-800 text-sm mb-3">7. 유통사별 품목별 판매 건수</h3>
+        <table className="excel-table w-full border-collapse border border-slate-300 text-sm">
+          <thead>
+            <tr className="excel-header">
+              <th className="excel-border border border-slate-300" colSpan={2}>구분</th>
+              <th className="excel-border border border-slate-300">소 계</th>
+              {channels.map(ch => (
+                <th key={ch} className="excel-border border border-slate-300">{ch}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {CATEGORIES.map(cat => (
+              <React.Fragment key={cat}>
+                <tr className="bg-[#FFFFF2CC] font-bold">
+                  <td className="excel-border border border-slate-300 font-bold text-center bg-slate-100" rowSpan={months.length + 1}>
+                    {cat}
+                  </td>
+                  <td className="excel-border border border-slate-300 text-center font-bold">누적</td>
+                  <td className="excel-border border border-slate-300 text-right">
+                    {data.table7[cat]?.["누적"]?.["소 계"]?.toLocaleString()}
+                  </td>
+                  {channels.map(ch => (
+                    <td key={ch} className="excel-border border border-slate-300 text-right">
+                      {data.table7[cat]?.["누적"]?.[ch]?.toLocaleString()}
+                    </td>
+                  ))}
+                </tr>
+                {months.map(m => (
+                  <tr key={m}>
+                    <td className="excel-border border border-slate-300 text-center">{m}</td>
+                    <td className="excel-border border border-slate-300 text-right font-medium">
+                      {data.table7[cat]?.[m]?.["소 계"]?.toLocaleString()}
+                    </td>
+                    {channels.map(ch => (
+                      <td key={ch} className="excel-border border border-slate-300 text-right">
+                        {data.table7[cat]?.[m]?.[ch]?.toLocaleString()}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </React.Fragment>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }
