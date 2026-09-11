@@ -105,8 +105,8 @@ export const INITIAL_DATA = {
 export const INITIAL_DATA_ORGANIC = {
   table1: {
     "7월": {
-      vendor: { "총 계": 37, "네이버": 32, "오아시스": 5 },
-      product: { "총 계": 107, "네이버": 92, "오아시스": 15 }
+      vendor: { "총 계": 55, "네이버": 26, "오아시스": 29 },
+      product: { "총 계": 175, "네이버": 85, "오아시스": 90 }
     },
     "8월": {
       vendor: { "총 계": 37, "네이버": 32, "오아시스": 5 },
