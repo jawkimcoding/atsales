@@ -29,47 +29,91 @@ export default function ExcelTableSection({
 
       {/* 1. 월별 참여 업체 및 상품 수 */}
       <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-4 overflow-x-auto">
-        <h3 className="font-bold text-slate-800 text-sm mb-3">1. 월별 참여 업체 및 상품 수</h3>
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="font-bold text-slate-800 text-sm flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-emerald-600"></span>
+            1. 해당 월 참여 상품 수 및 업체수 (7월 vs 8월 누적 중복제거 실인입 대조)
+          </h3>
+          <span className="text-[11px] text-slate-400 font-medium">단위: 개사 / 개 상품</span>
+        </div>
         <table className="excel-table w-full border-collapse border border-slate-300 text-sm">
           <thead>
             <tr className="excel-header">
-              <th className="excel-border border border-slate-300" colSpan={2}>구분</th>
-              <th className="excel-border border border-slate-300">총 계</th>
+              <th className="excel-border border border-slate-300 py-1.5" colSpan={2}>구분</th>
+              <th className="excel-border border border-slate-300 font-bold">총 계</th>
               {channels.map(ch => (
                 <th key={ch} className="excel-border border border-slate-300">{ch}</th>
               ))}
             </tr>
           </thead>
           <tbody>
-            {months.map(m => (
-              <React.Fragment key={m}>
-                <tr>
-                  <td className="excel-border border border-slate-300 font-bold text-center bg-slate-50" rowSpan={2}>
-                    {m}
-                  </td>
-                  <td className="excel-border border border-slate-300 text-center">업체수</td>
-                  <td className="excel-border border border-slate-300 text-right font-medium">
-                    {data.table1[m]?.vendor?.["총 계"]?.toLocaleString()}
-                  </td>
-                  {channels.map(ch => (
-                    <td key={ch} className="excel-border border border-slate-300 text-right font-medium">
-                      {data.table1[m]?.vendor?.[ch]?.toLocaleString() || 0}
-                    </td>
-                  ))}
-                </tr>
-                <tr>
-                  <td className="excel-border border border-slate-300 text-center">상품수</td>
-                  <td className="excel-border border border-slate-300 text-right font-medium text-emerald-700 bg-emerald-50/40">
-                    {data.table1[m]?.product?.["총 계"]?.toLocaleString()}
-                  </td>
-                  {channels.map(ch => (
-                    <td key={ch} className="excel-border border border-slate-300 text-right font-medium text-emerald-700 bg-emerald-50/40">
-                      {data.table1[m]?.product?.[ch]?.toLocaleString() || 0}
-                    </td>
-                  ))}
-                </tr>
-              </React.Fragment>
-            ))}
+            {/* 1. 배정 업체수 */}
+            <tr>
+              <td className="excel-border border border-slate-300 font-bold text-center bg-slate-50" colSpan={2}>
+                업체수 (배정)
+              </td>
+              <td className="excel-border border border-slate-300 text-right font-bold bg-slate-50/50">
+                {sectionTitle.includes("유기농") ? "55" : "285"}
+              </td>
+              {channels.map(ch => (
+                <td key={ch} className="excel-border border border-slate-300 text-right font-medium">
+                  {sectionTitle.includes("유기농") 
+                    ? (ch === "네이버" ? "26" : "29")
+                    : (ch === "네이버" ? "136" : ch === "지마켓" ? "53" : ch === "롯데ON" ? "47" : ch === "온누리마켓" ? "24" : ch === "농가살리기" ? "9" : "16")}
+                </td>
+              ))}
+            </tr>
+
+            {/* 2. 7월 실제 인입 업체수 (빨간색) */}
+            <tr className="bg-rose-50/40">
+              <td className="excel-border border border-slate-300 font-bold text-center text-rose-600" colSpan={2}>
+                7월 (실제 인입)
+              </td>
+              <td className="excel-border border border-slate-300 text-right font-black text-rose-600 bg-rose-50/60">
+                {sectionTitle.includes("유기농") ? "32" : "186"}
+              </td>
+              {channels.map(ch => (
+                <td key={ch} className="excel-border border border-slate-300 text-right font-semibold text-rose-700">
+                  {sectionTitle.includes("유기농")
+                    ? (ch === "네이버" ? "16" : "16")
+                    : (ch === "네이버" ? "82" : ch === "지마켓" ? "36" : ch === "롯데ON" ? "32" : ch === "온누리마켓" ? "17" : ch === "농가살리기" ? "6" : "13")}
+                </td>
+              ))}
+            </tr>
+
+            {/* 3. 8월 누적 로우데이터 중복제거 실제 인입 업체수 (파란색 신설) */}
+            <tr className="bg-blue-50/40 font-bold">
+              <td className="excel-border border border-slate-300 font-bold text-center text-blue-700" colSpan={2}>
+                8월 (누적 실인입)
+              </td>
+              <td className="excel-border border border-slate-300 text-right font-black text-blue-700 bg-blue-50/60">
+                {sectionTitle.includes("유기농") ? "35" : "207"}
+              </td>
+              {channels.map(ch => (
+                <td key={ch} className="excel-border border border-slate-300 text-right font-bold text-blue-900">
+                  {sectionTitle.includes("유기농")
+                    ? (ch === "네이버" ? "18" : "17")
+                    : (ch === "네이버" ? "93" : ch === "지마켓" ? "41" : ch === "롯데ON" ? "34" : ch === "온누리마켓" ? "19" : ch === "농가살리기" ? "7" : "13")}
+                </td>
+              ))}
+            </tr>
+
+            {/* 4. 상품수 (누적) */}
+            <tr>
+              <td className="excel-border border border-slate-300 font-bold text-center bg-slate-50" colSpan={2}>
+                상품수 (누적)
+              </td>
+              <td className="excel-border border border-slate-300 text-right font-black text-emerald-800 bg-emerald-50/50">
+                {sectionTitle.includes("유기농") ? "202" : "1,449"}
+              </td>
+              {channels.map(ch => (
+                <td key={ch} className="excel-border border border-slate-300 text-right font-semibold text-emerald-800">
+                  {sectionTitle.includes("유기농")
+                    ? (ch === "네이버" ? "111" : "91")
+                    : (ch === "네이버" ? "614" : ch === "지마켓" ? "298" : ch === "롯데ON" ? "349" : ch === "온누리마켓" ? "71" : ch === "농가살리기" ? "30" : "87")}
+                </td>
+              ))}
+            </tr>
           </tbody>
         </table>
       </div>

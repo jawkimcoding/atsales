@@ -1,5 +1,5 @@
 import React from 'react';
-import { DollarSign, Ticket, ShoppingCart, TrendingUp, Layers, CheckCircle2 } from 'lucide-react';
+import { DollarSign, Ticket, ShoppingCart, TrendingUp, Layers, CheckCircle2, Building2, Package } from 'lucide-react';
 import { Bar } from 'react-chartjs-2';
 
 export default function TotalSummarySection({ agriData, organicData, months }) {
@@ -87,6 +87,134 @@ export default function TotalSummarySection({ agriData, organicData, months }) {
         <span className="text-[11px] font-bold px-2.5 py-1 bg-emerald-200 text-emerald-900 rounded-full">
           전 기획전 집계 완료
         </span>
+      </div>
+
+      {/* ※ 전체 기획전 결과: 1. 해당 월 참여 상품 수 및 업체수 (사용자 요청 8월 행 포함 전면 구현) */}
+      <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5 overflow-hidden">
+        <div className="flex items-center gap-2 mb-3">
+          <span className="bg-yellow-300 px-2.5 py-0.5 text-xs font-black text-slate-900 rounded shadow-2xs">
+            ※ 전체 기획전 결과
+          </span>
+          <span className="text-xs font-bold text-slate-700">
+            1. 해당 월 참여 상품 수 및 업체수 (7월 vs 8월 누적 중복제거 인입 실적)
+          </span>
+        </div>
+
+        <div className="overflow-x-auto">
+          <table className="excel-table w-full border-collapse border border-slate-300 text-xs">
+            <thead>
+              <tr>
+                <th className="excel-border border border-slate-300 bg-slate-100 py-1.5 px-3 text-center font-bold" rowSpan={2}>
+                  구분
+                </th>
+                <th className="excel-border border border-slate-300 bg-slate-100 py-1.5 px-3 text-center font-black" rowSpan={2}>
+                  총 계
+                </th>
+                <th className="excel-border border border-slate-300 bg-[#D9E1F2] py-1.5 px-3 text-center font-black text-slate-800" colSpan={7}>
+                  농부가바로팜 (농산물 온라인 마케터)
+                </th>
+                <th className="excel-border border border-slate-300 bg-[#E2EFDA] py-1.5 px-3 text-center font-black text-slate-800" colSpan={3}>
+                  친환경 (유기농 기획전)
+                </th>
+              </tr>
+              <tr>
+                {/* 농부가바로팜 7열 */}
+                <th className="excel-border border border-slate-300 bg-[#D9E1F2] py-1 px-2 text-center font-bold">소 계</th>
+                <th className="excel-border border border-slate-300 bg-[#D9E1F2] py-1 px-2 text-center">네이버</th>
+                <th className="excel-border border border-slate-300 bg-[#D9E1F2] py-1 px-2 text-center">지마켓</th>
+                <th className="excel-border border border-slate-300 bg-[#D9E1F2] py-1 px-2 text-center">롯데ON</th>
+                <th className="excel-border border border-slate-300 bg-[#D9E1F2] py-1 px-2 text-center">온누리마켓</th>
+                <th className="excel-border border border-slate-300 bg-[#D9E1F2] py-1 px-2 text-center">농가살리기</th>
+                <th className="excel-border border border-slate-300 bg-[#D9E1F2] py-1 px-2 text-center">오아시스</th>
+                {/* 친환경 3열 */}
+                <th className="excel-border border border-slate-300 bg-[#E2EFDA] py-1 px-2 text-center font-bold">소 계</th>
+                <th className="excel-border border border-slate-300 bg-[#E2EFDA] py-1 px-2 text-center">네이버</th>
+                <th className="excel-border border border-slate-300 bg-[#E2EFDA] py-1 px-2 text-center">오아시스</th>
+              </tr>
+            </thead>
+            <tbody>
+              {/* 업체수 (배정) */}
+              <tr>
+                <td className="excel-border border border-slate-300 text-center font-bold bg-slate-50">
+                  업체수
+                </td>
+                <td className="excel-border border border-slate-300 text-right font-black bg-slate-50/60">
+                  340
+                </td>
+                <td className="excel-border border border-slate-300 text-right font-bold bg-[#D9E1F2]/20">285</td>
+                <td className="excel-border border border-slate-300 text-right">136</td>
+                <td className="excel-border border border-slate-300 text-right">53</td>
+                <td className="excel-border border border-slate-300 text-right">47</td>
+                <td className="excel-border border border-slate-300 text-right">24</td>
+                <td className="excel-border border border-slate-300 text-right">9</td>
+                <td className="excel-border border border-slate-300 text-right">16</td>
+                <td className="excel-border border border-slate-300 text-right font-bold bg-[#E2EFDA]/20">55</td>
+                <td className="excel-border border border-slate-300 text-right">26</td>
+                <td className="excel-border border border-slate-300 text-right">29</td>
+              </tr>
+
+              {/* 7월 실제 인입 (빨간색) */}
+              <tr className="bg-rose-50/30">
+                <td className="excel-border border border-slate-300 text-center font-black text-rose-600">
+                  7월
+                </td>
+                <td className="excel-border border border-slate-300 text-right font-black text-rose-600 bg-rose-50/50">
+                  218
+                </td>
+                <td className="excel-border border border-slate-300 text-right font-bold text-rose-700 bg-[#D9E1F2]/20">186</td>
+                <td className="excel-border border border-slate-300 text-right text-rose-700">82</td>
+                <td className="excel-border border border-slate-300 text-right text-rose-700">36</td>
+                <td className="excel-border border border-slate-300 text-right text-rose-700">32</td>
+                <td className="excel-border border border-slate-300 text-right text-rose-700">17</td>
+                <td className="excel-border border border-slate-300 text-right text-rose-700">6</td>
+                <td className="excel-border border border-slate-300 text-right text-rose-700">13</td>
+                <td className="excel-border border border-slate-300 text-right font-bold text-rose-700 bg-[#E2EFDA]/20">32</td>
+                <td className="excel-border border border-slate-300 text-right text-rose-700">16</td>
+                <td className="excel-border border border-slate-300 text-right text-rose-700">16</td>
+              </tr>
+
+              {/* 8월 누적 로우데이터 중복제거 실제 인입 (신설) */}
+              <tr className="bg-blue-50/40 font-bold">
+                <td className="excel-border border border-slate-300 text-center font-black text-blue-700">
+                  8월 (누적)
+                </td>
+                <td className="excel-border border border-slate-300 text-right font-black text-blue-700 bg-blue-50/60">
+                  242
+                </td>
+                <td className="excel-border border border-slate-300 text-right font-black text-blue-800 bg-[#D9E1F2]/40">207</td>
+                <td className="excel-border border border-slate-300 text-right text-blue-900 font-bold">93</td>
+                <td className="excel-border border border-slate-300 text-right text-blue-900 font-bold">41</td>
+                <td className="excel-border border border-slate-300 text-right text-blue-900 font-bold">34</td>
+                <td className="excel-border border border-slate-300 text-right text-blue-900 font-bold">19</td>
+                <td className="excel-border border border-slate-300 text-right text-blue-900 font-bold">7</td>
+                <td className="excel-border border border-slate-300 text-right text-blue-900 font-bold">13</td>
+                <td className="excel-border border border-slate-300 text-right font-black text-blue-800 bg-[#E2EFDA]/40">35</td>
+                <td className="excel-border border border-slate-300 text-right text-blue-900 font-bold">18</td>
+                <td className="excel-border border border-slate-300 text-right text-blue-900 font-bold">17</td>
+              </tr>
+
+              {/* 상품수 (누적) */}
+              <tr>
+                <td className="excel-border border border-slate-300 text-center font-bold bg-slate-50">
+                  상품수
+                </td>
+                <td className="excel-border border border-slate-300 text-right font-black bg-slate-50/60 text-emerald-900">
+                  1,651
+                </td>
+                <td className="excel-border border border-slate-300 text-right font-bold bg-[#D9E1F2]/20 text-emerald-800">1,449</td>
+                <td className="excel-border border border-slate-300 text-right">614</td>
+                <td className="excel-border border border-slate-300 text-right">298</td>
+                <td className="excel-border border border-slate-300 text-right">349</td>
+                <td className="excel-border border border-slate-300 text-right">71</td>
+                <td className="excel-border border border-slate-300 text-right">30</td>
+                <td className="excel-border border border-slate-300 text-right">87</td>
+                <td className="excel-border border border-slate-300 text-right font-bold bg-[#E2EFDA]/20 text-emerald-800">202</td>
+                <td className="excel-border border border-slate-300 text-right">111</td>
+                <td className="excel-border border border-slate-300 text-right">91</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
 
       {/* KPI 카드 4종 */}
