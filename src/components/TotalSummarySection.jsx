@@ -193,24 +193,44 @@ export default function TotalSummarySection({ agriData, organicData, months }) {
                 <td className="excel-border border border-slate-300 text-right text-blue-900 font-bold">17</td>
               </tr>
 
-              {/* 상품수 (누적) */}
-              <tr>
-                <td className="excel-border border border-slate-300 text-center font-bold bg-slate-50">
-                  상품수
+              {/* 상품수 (7월 참여 실적) */}
+              <tr className="bg-rose-50/20">
+                <td className="excel-border border border-slate-300 text-center font-bold text-rose-600 bg-slate-50">
+                  상품수 (7월)
                 </td>
-                <td className="excel-border border border-slate-300 text-right font-black bg-slate-50/60 text-emerald-900">
+                <td className="excel-border border border-slate-300 text-right font-black text-rose-600 bg-rose-50/40">
+                  1,305
+                </td>
+                <td className="excel-border border border-slate-300 text-right font-bold bg-[#D9E1F2]/20 text-rose-700">1,130</td>
+                <td className="excel-border border border-slate-300 text-right text-rose-800">388</td>
+                <td className="excel-border border border-slate-300 text-right text-rose-800">258</td>
+                <td className="excel-border border border-slate-300 text-right text-rose-800">313</td>
+                <td className="excel-border border border-slate-300 text-right text-rose-800">55</td>
+                <td className="excel-border border border-slate-300 text-right text-rose-800">29</td>
+                <td className="excel-border border border-slate-300 text-right text-rose-800">87</td>
+                <td className="excel-border border border-slate-300 text-right font-bold bg-[#E2EFDA]/20 text-rose-700">175</td>
+                <td className="excel-border border border-slate-300 text-right text-rose-800">85</td>
+                <td className="excel-border border border-slate-300 text-right text-rose-800">90</td>
+              </tr>
+
+              {/* 상품수 (8월 누적 실적) */}
+              <tr className="bg-emerald-50/30">
+                <td className="excel-border border border-slate-300 text-center font-bold text-emerald-700 bg-slate-50">
+                  상품수 (8월 누적)
+                </td>
+                <td className="excel-border border border-slate-300 text-right font-black bg-emerald-50/60 text-emerald-900">
                   1,651
                 </td>
-                <td className="excel-border border border-slate-300 text-right font-bold bg-[#D9E1F2]/20 text-emerald-800">1,449</td>
-                <td className="excel-border border border-slate-300 text-right">614</td>
-                <td className="excel-border border border-slate-300 text-right">298</td>
-                <td className="excel-border border border-slate-300 text-right">349</td>
-                <td className="excel-border border border-slate-300 text-right">71</td>
-                <td className="excel-border border border-slate-300 text-right">30</td>
-                <td className="excel-border border border-slate-300 text-right">87</td>
-                <td className="excel-border border border-slate-300 text-right font-bold bg-[#E2EFDA]/20 text-emerald-800">202</td>
-                <td className="excel-border border border-slate-300 text-right">111</td>
-                <td className="excel-border border border-slate-300 text-right">91</td>
+                <td className="excel-border border border-slate-300 text-right font-bold bg-[#D9E1F2]/30 text-emerald-800">1,449</td>
+                <td className="excel-border border border-slate-300 text-right text-emerald-900 font-medium">614</td>
+                <td className="excel-border border border-slate-300 text-right text-emerald-900 font-medium">298</td>
+                <td className="excel-border border border-slate-300 text-right text-emerald-900 font-medium">349</td>
+                <td className="excel-border border border-slate-300 text-right text-emerald-900 font-medium">71</td>
+                <td className="excel-border border border-slate-300 text-right text-emerald-900 font-medium">30</td>
+                <td className="excel-border border border-slate-300 text-right text-emerald-900 font-medium">87</td>
+                <td className="excel-border border border-slate-300 text-right font-bold bg-[#E2EFDA]/30 text-emerald-800">202</td>
+                <td className="excel-border border border-slate-300 text-right text-emerald-900 font-medium">111</td>
+                <td className="excel-border border border-slate-300 text-right text-emerald-900 font-medium">91</td>
               </tr>
             </tbody>
           </table>

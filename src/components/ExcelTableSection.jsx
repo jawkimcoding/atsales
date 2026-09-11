@@ -98,12 +98,29 @@ export default function ExcelTableSection({
               ))}
             </tr>
 
-            {/* 4. 상품수 (누적) */}
-            <tr>
-              <td className="excel-border border border-slate-300 font-bold text-center bg-slate-50" colSpan={2}>
-                상품수 (누적)
+            {/* 4. 7월 실제 인입 상품수 (빨간색) */}
+            <tr className="bg-rose-50/30">
+              <td className="excel-border border border-slate-300 font-bold text-center text-rose-600 bg-slate-50" colSpan={2}>
+                상품수 (7월)
               </td>
-              <td className="excel-border border border-slate-300 text-right font-black text-emerald-800 bg-emerald-50/50">
+              <td className="excel-border border border-slate-300 text-right font-black text-rose-600 bg-rose-50/50">
+                {sectionTitle.includes("유기농") ? "175" : "1,130"}
+              </td>
+              {channels.map(ch => (
+                <td key={ch} className="excel-border border border-slate-300 text-right font-semibold text-rose-700">
+                  {sectionTitle.includes("유기농")
+                    ? (ch === "네이버" ? "85" : "90")
+                    : (ch === "네이버" ? "388" : ch === "지마켓" ? "258" : ch === "롯데ON" ? "313" : ch === "온누리마켓" ? "55" : ch === "농가살리기" ? "29" : "87")}
+                </td>
+              ))}
+            </tr>
+
+            {/* 5. 8월 누적 상품수 (초록색) */}
+            <tr className="bg-emerald-50/30">
+              <td className="excel-border border border-slate-300 font-bold text-center text-emerald-800 bg-slate-50" colSpan={2}>
+                상품수 (8월 누적)
+              </td>
+              <td className="excel-border border border-slate-300 text-right font-black text-emerald-900 bg-emerald-50/60">
                 {sectionTitle.includes("유기농") ? "202" : "1,449"}
               </td>
               {channels.map(ch => (
