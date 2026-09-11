@@ -1,6 +1,7 @@
 import React from 'react';
 import { DollarSign, Ticket, ShoppingCart, TrendingUp, Layers, CheckCircle2, Building2, Package } from 'lucide-react';
 import { Bar } from 'react-chartjs-2';
+import { COUPON_ASSIGNED_AGRICULTURE, COUPON_ASSIGNED_ORGANIC, COUPON_ASSIGNED_TOTAL } from '../data/initialData';
 
 export default function TotalSummarySection({ agriData, organicData, months }) {
   // 농산물
@@ -11,7 +12,7 @@ export default function TotalSummarySection({ agriData, organicData, months }) {
   const agriCoupon7 = agriData.table2["7월"]?.["총 계"] || 0;
   const agriCoupon8 = agriData.table2["8월"]?.["총 계"] || 0;
   const agriCouponCum = agriCoupon7 + agriCoupon8;
-  const agriCouponAssigned = 640000000;
+  const agriCouponAssigned = COUPON_ASSIGNED_AGRICULTURE["총 계"];
 
   const agriCount7 = agriData.table4["7월"]?.["총 계"] || 0;
   const agriCount8 = agriData.table4["8월"]?.["총 계"] || 0;
@@ -25,7 +26,7 @@ export default function TotalSummarySection({ agriData, organicData, months }) {
   const orgCoupon7 = organicData.table2["7월"]?.["총 계"] || 0;
   const orgCoupon8 = organicData.table2["8월"]?.["총 계"] || 0;
   const orgCouponCum = orgCoupon7 + orgCoupon8;
-  const orgCouponAssigned = 100000000;
+  const orgCouponAssigned = COUPON_ASSIGNED_ORGANIC["총 계"];
 
   const orgCount7 = organicData.table4["7월"]?.["총 계"] || 0;
   const orgCount8 = organicData.table4["8월"]?.["총 계"] || 0;
@@ -39,7 +40,7 @@ export default function TotalSummarySection({ agriData, organicData, months }) {
   const totCoupon7 = agriCoupon7 + orgCoupon7;
   const totCoupon8 = agriCoupon8 + orgCoupon8;
   const totCouponCum = agriCouponCum + orgCouponCum;
-  const totCouponAssigned = agriCouponAssigned + orgCouponAssigned;
+  const totCouponAssigned = COUPON_ASSIGNED_TOTAL["총 계"];
 
   const totCount7 = agriCount7 + orgCount7;
   const totCount8 = agriCount8 + orgCount8;
@@ -297,7 +298,7 @@ export default function TotalSummarySection({ agriData, organicData, months }) {
             {((totCouponCum / totCouponAssigned) * 100).toFixed(1)}%
           </div>
           <div className="text-xs text-slate-500 mt-1">
-            잔여 예산: {(totCouponAssigned - totCouponCum).toLocaleString()}원 (배정 7.4억)
+            잔여 예산: {(totCouponAssigned - totCouponCum).toLocaleString()}원 (배정 {(totCouponAssigned / 100000000).toFixed(1)}억)
           </div>
         </div>
 

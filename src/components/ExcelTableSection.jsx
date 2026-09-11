@@ -1,11 +1,11 @@
 import React from 'react';
-import { CATEGORIES } from '../data/initialData';
+import { CATEGORIES, COUPON_ASSIGNED_AGRICULTURE } from '../data/initialData';
 
 export default function ExcelTableSection({
   data,
   months = ["7월", "8월"],
   channels = ["네이버", "지마켓", "롯데ON", "온누리마켓", "농가살리기", "오아시스"],
-  couponAssigned = { "총 계": 640000000 },
+  couponAssigned = COUPON_ASSIGNED_AGRICULTURE,
   sectionTitle = "※ 농산물 온라인 마케터",
   badgeBg = "bg-yellow-300"
 }) {
