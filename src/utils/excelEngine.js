@@ -113,11 +113,15 @@ function parseRawSheet(worksheet, targetChannels, base7mData, newMonthLabel = "8
 
   const cumData = {
     byChannel: {},
-    byCatChannel: {}
+    byCatChannel: {},
+    uniqueBizByChannel: {}, // ch -> Set(bizNo)
+    allUniqueBiz: new Set(),
+    companyMap: {} // bizNo -> { bizNo, compName, channel, sales, coupon, count, products }
   };
 
   targetChannels.forEach(ch => {
     cumData.byChannel[ch] = { sales: 0, coupon: 0, count: 0, products: 0 };
+    cumData.uniqueBizByChannel[ch] = new Set();
   });
 
   CATEGORIES.forEach(cat => {
@@ -130,11 +134,18 @@ function parseRawSheet(worksheet, targetChannels, base7mData, newMonthLabel = "8
   let validRowCount = 0;
 
   rows.forEach(r => {
-    const channelRaw = getCleanValue(r, ['유통사명', '유통사']);
-    const channel = String(channelRaw || '').trim();
+    let channelRaw = getCleanValue(r, ['유통사명', '유통사', '채널']);
+    let channel = String(channelRaw || '').trim();
+    if (channel.includes("롯데")) channel = "롯데ON";
 
     const categoryRaw = getCleanValue(r, ['품목분류', '품목']);
     const category = String(categoryRaw || '').trim();
+
+    const bizNoRaw = getCleanValue(r, ['사업자번호', '사업자 등록번호', '사업자등록번호']);
+    const bizNo = String(bizNoRaw || '').trim();
+
+    const compNameRaw = getCleanValue(r, ['운영사', '업체명', '판매처', '사업자명']);
+    const compName = String(compNameRaw || '').trim();
 
     const count = Number(getCleanValue(r, ['판매건수', '판매 건수', '건수'])) || 0;
     const sales = Number(getCleanValue(r, ['매출액', '매출'])) || 0;
@@ -146,6 +157,29 @@ function parseRawSheet(worksheet, targetChannels, base7mData, newMonthLabel = "8
       cumData.byChannel[channel].count += count;
       cumData.byChannel[channel].products += 1;
       validRowCount++;
+
+      // 신규 및 기존 업체 고유 식별 및 집계
+      const companyKey = bizNo || compName;
+      if (companyKey) {
+        cumData.uniqueBizByChannel[channel].add(companyKey);
+        cumData.allUniqueBiz.add(companyKey);
+
+        if (!cumData.companyMap[companyKey]) {
+          cumData.companyMap[companyKey] = {
+            bizNo: bizNo || "-",
+            compName: compName || "신규 참여업체",
+            channel,
+            sales: 0,
+            coupon: 0,
+            count: 0,
+            products: 0
+          };
+        }
+        cumData.companyMap[companyKey].sales += sales;
+        cumData.companyMap[companyKey].coupon += coupon;
+        cumData.companyMap[companyKey].count += count;
+        cumData.companyMap[companyKey].products += 1;
+      }
 
       if (CATEGORIES.includes(category)) {
         cumData.byCatChannel[category][channel].sales += sales;
@@ -176,6 +210,12 @@ function parseRawSheet(worksheet, targetChannels, base7mData, newMonthLabel = "8
     product: { "총 계": 0 }
   };
 
+  // 실시간 동적 Table 1 8월 누적 데이터 생성
+  updatedData.table1["8월누적"] = {
+    vendor: { "총 계": cumData.allUniqueBiz.size },
+    product: { "총 계": 0 }
+  };
+
   targetChannels.forEach(ch => {
     const c7 = base7mData.table2["7월"]?.[ch] || 0;
     const s7 = base7mData.table3["7월"]?.[ch] || 0;
@@ -193,6 +233,10 @@ function parseRawSheet(worksheet, targetChannels, base7mData, newMonthLabel = "8
     updatedData.table4[newMonthLabel][ch] = pureCount;
     updatedData.table1[newMonthLabel].product[ch] = pureProd;
 
+    // 8월 누적 고유 업체수 및 누적 상품수 동적 매핑
+    updatedData.table1["8월누적"].vendor[ch] = cumData.uniqueBizByChannel[ch].size;
+    updatedData.table1["8월누적"].product[ch] = cumData.byChannel[ch].products;
+
     totPureCoupon += pureCoupon;
     totPureSales += pureSales;
     totPureCount += pureCount;
@@ -203,6 +247,10 @@ function parseRawSheet(worksheet, targetChannels, base7mData, newMonthLabel = "8
   updatedData.table3[newMonthLabel]["총 계"] = totPureSales;
   updatedData.table4[newMonthLabel]["총 계"] = totPureCount;
   updatedData.table1[newMonthLabel].product["총 계"] = totPureProd;
+  updatedData.table1["8월누적"].product["총 계"] = Object.values(cumData.byChannel).reduce((acc, v) => acc + v.products, 0);
+
+  // 로우데이터에서 자동 발견된 전체 업체 목록 보관
+  updatedData.dynamicCompanyList = Object.values(cumData.companyMap);
 
   // 2. Table 5 (품목 쿠폰), Table 6 (품목 매출), Table 7 (품목 건수) 차감
   CATEGORIES.forEach(cat => {

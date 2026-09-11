@@ -45,6 +45,23 @@ export default function TotalSummarySection({ agriData, organicData, months }) {
   const totCount8 = agriCount8 + orgCount8;
   const totCountCum = agriCountCum + orgCountCum;
 
+  // 동적 업체수 및 상품수 (구글 시트 로우데이터에 신규 업체 추가 시 100% 자동 갱신)
+  const agriVendors8 = agriData.table1?.["8월누적"]?.vendor || {
+    "총 계": 207, "네이버": 93, "지마켓": 41, "롯데ON": 34, "온누리마켓": 19, "농가살리기": 7, "오아시스": 13
+  };
+  const orgVendors8 = organicData.table1?.["8월누적"]?.vendor || {
+    "총 계": 35, "네이버": 18, "오아시스": 17
+  };
+  const totVendors8 = (agriVendors8["총 계"] || 207) + (orgVendors8["총 계"] || 35);
+
+  const agriProducts8 = agriData.table1?.["8월누적"]?.product || {
+    "총 계": 1449, "네이버": 614, "지마켓": 298, "롯데ON": 349, "온누리마켓": 71, "농가살리기": 30, "오아시스": 87
+  };
+  const orgProducts8 = organicData.table1?.["8월누적"]?.product || {
+    "총 계": 202, "네이버": 111, "오아시스": 91
+  };
+  const totProducts8 = (agriProducts8["총 계"] || 1449) + (orgProducts8["총 계"] || 202);
+
   const compareChartData = {
     labels: ['농산물 온라인 마케터', '유기농 기획전', '전체 총 합계'],
     datasets: [
@@ -173,24 +190,24 @@ export default function TotalSummarySection({ agriData, organicData, months }) {
                 <td className="excel-border border border-slate-300 text-right text-rose-700">16</td>
               </tr>
 
-              {/* 8월 누적 로우데이터 중복제거 실제 인입 (신설) */}
+              {/* 8월 누적 로우데이터 중복제거 실제 인입 (신규 업체 추가 시 100% 자동 증가) */}
               <tr className="bg-blue-50/40 font-bold">
                 <td className="excel-border border border-slate-300 text-center font-black text-blue-700">
                   8월 (누적)
                 </td>
                 <td className="excel-border border border-slate-300 text-right font-black text-blue-700 bg-blue-50/60">
-                  242
+                  {totVendors8}
                 </td>
-                <td className="excel-border border border-slate-300 text-right font-black text-blue-800 bg-[#D9E1F2]/40">207</td>
-                <td className="excel-border border border-slate-300 text-right text-blue-900 font-bold">93</td>
-                <td className="excel-border border border-slate-300 text-right text-blue-900 font-bold">41</td>
-                <td className="excel-border border border-slate-300 text-right text-blue-900 font-bold">34</td>
-                <td className="excel-border border border-slate-300 text-right text-blue-900 font-bold">19</td>
-                <td className="excel-border border border-slate-300 text-right text-blue-900 font-bold">7</td>
-                <td className="excel-border border border-slate-300 text-right text-blue-900 font-bold">13</td>
-                <td className="excel-border border border-slate-300 text-right font-black text-blue-800 bg-[#E2EFDA]/40">35</td>
-                <td className="excel-border border border-slate-300 text-right text-blue-900 font-bold">18</td>
-                <td className="excel-border border border-slate-300 text-right text-blue-900 font-bold">17</td>
+                <td className="excel-border border border-slate-300 text-right font-black text-blue-800 bg-[#D9E1F2]/40">{agriVendors8["총 계"]}</td>
+                <td className="excel-border border border-slate-300 text-right text-blue-900 font-bold">{agriVendors8["네이버"]}</td>
+                <td className="excel-border border border-slate-300 text-right text-blue-900 font-bold">{agriVendors8["지마켓"]}</td>
+                <td className="excel-border border border-slate-300 text-right text-blue-900 font-bold">{agriVendors8["롯데ON"]}</td>
+                <td className="excel-border border border-slate-300 text-right text-blue-900 font-bold">{agriVendors8["온누리마켓"]}</td>
+                <td className="excel-border border border-slate-300 text-right text-blue-900 font-bold">{agriVendors8["농가살리기"]}</td>
+                <td className="excel-border border border-slate-300 text-right text-blue-900 font-bold">{agriVendors8["오아시스"]}</td>
+                <td className="excel-border border border-slate-300 text-right font-black text-blue-800 bg-[#E2EFDA]/40">{orgVendors8["총 계"]}</td>
+                <td className="excel-border border border-slate-300 text-right text-blue-900 font-bold">{orgVendors8["네이버"]}</td>
+                <td className="excel-border border border-slate-300 text-right text-blue-900 font-bold">{orgVendors8["오아시스"]}</td>
               </tr>
 
               {/* 상품수 (7월 참여 실적) */}
@@ -213,24 +230,24 @@ export default function TotalSummarySection({ agriData, organicData, months }) {
                 <td className="excel-border border border-slate-300 text-right text-rose-800">90</td>
               </tr>
 
-              {/* 상품수 (8월 누적 실적) */}
+              {/* 상품수 (8월 누적 실적 - 신규 상품 추가 시 100% 자동 증가) */}
               <tr className="bg-emerald-50/30">
                 <td className="excel-border border border-slate-300 text-center font-bold text-emerald-700 bg-slate-50">
                   상품수 (8월 누적)
                 </td>
                 <td className="excel-border border border-slate-300 text-right font-black bg-emerald-50/60 text-emerald-900">
-                  1,651
+                  {totProducts8?.toLocaleString()}
                 </td>
-                <td className="excel-border border border-slate-300 text-right font-bold bg-[#D9E1F2]/30 text-emerald-800">1,449</td>
-                <td className="excel-border border border-slate-300 text-right text-emerald-900 font-medium">614</td>
-                <td className="excel-border border border-slate-300 text-right text-emerald-900 font-medium">298</td>
-                <td className="excel-border border border-slate-300 text-right text-emerald-900 font-medium">349</td>
-                <td className="excel-border border border-slate-300 text-right text-emerald-900 font-medium">71</td>
-                <td className="excel-border border border-slate-300 text-right text-emerald-900 font-medium">30</td>
-                <td className="excel-border border border-slate-300 text-right text-emerald-900 font-medium">87</td>
-                <td className="excel-border border border-slate-300 text-right font-bold bg-[#E2EFDA]/30 text-emerald-800">202</td>
-                <td className="excel-border border border-slate-300 text-right text-emerald-900 font-medium">111</td>
-                <td className="excel-border border border-slate-300 text-right text-emerald-900 font-medium">91</td>
+                <td className="excel-border border border-slate-300 text-right font-bold bg-[#D9E1F2]/30 text-emerald-800">{agriProducts8["총 계"]?.toLocaleString()}</td>
+                <td className="excel-border border border-slate-300 text-right text-emerald-900 font-medium">{agriProducts8["네이버"]?.toLocaleString()}</td>
+                <td className="excel-border border border-slate-300 text-right text-emerald-900 font-medium">{agriProducts8["지마켓"]?.toLocaleString()}</td>
+                <td className="excel-border border border-slate-300 text-right text-emerald-900 font-medium">{agriProducts8["롯데ON"]?.toLocaleString()}</td>
+                <td className="excel-border border border-slate-300 text-right text-emerald-900 font-medium">{agriProducts8["온누리마켓"]?.toLocaleString()}</td>
+                <td className="excel-border border border-slate-300 text-right text-emerald-900 font-medium">{agriProducts8["농가살리기"]?.toLocaleString()}</td>
+                <td className="excel-border border border-slate-300 text-right text-emerald-900 font-medium">{agriProducts8["오아시스"]?.toLocaleString()}</td>
+                <td className="excel-border border border-slate-300 text-right font-bold bg-[#E2EFDA]/30 text-emerald-800">{orgProducts8["총 계"]?.toLocaleString()}</td>
+                <td className="excel-border border border-slate-300 text-right text-emerald-900 font-medium">{orgProducts8["네이버"]?.toLocaleString()}</td>
+                <td className="excel-border border border-slate-300 text-right text-emerald-900 font-medium">{orgProducts8["오아시스"]?.toLocaleString()}</td>
               </tr>
             </tbody>
           </table>
