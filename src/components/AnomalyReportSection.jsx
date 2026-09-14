@@ -25,9 +25,10 @@ import {
   INITIAL_DATA_ORGANIC
 } from '../data/initialData';
 import { AUGUST_NEW_PRODUCT_ANOMALIES } from '../data/augustNewProductAnomalies';
+import { JULY_PRODUCT_ANOMALIES } from '../data/julyProductAnomalies';
 
 export default function AnomalyReportSection({ activeSubTab, onSubTabChange }) {
-  const [internalSubTab, setInternalSubTab] = useState('august_new'); // 'august_new' | 'pivot' | 'decreased' | 'category' | 'compliance' | 'top_vendors'
+  const [internalSubTab, setInternalSubTab] = useState('july_anom'); // 'july_anom' | 'august_new' | 'category' | 'pivot' | 'decreased' | 'top_vendors' | 'compliance'
   const subTab = activeSubTab || internalSubTab;
   const setSubTab = (tab) => {
     if (onSubTabChange) onSubTabChange(tab);
@@ -36,6 +37,11 @@ export default function AnomalyReportSection({ activeSubTab, onSubTabChange }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedChannel, setSelectedChannel] = useState('ALL');
   const [selectedChangeType, setSelectedChangeType] = useState('ALL');
+
+  // 7월 품목분류 이상 필터링 상태
+  const [julySearchTerm, setJulySearchTerm] = useState('');
+  const [selectedJulyChannel, setSelectedJulyChannel] = useState('ALL');
+  const [selectedJulyType, setSelectedJulyType] = useState('ALL');
 
   // 8월 신규 인입 상품 필터링 상태
   const [selectedNewAnomType, setSelectedNewAnomType] = useState('ALL');
@@ -80,6 +86,45 @@ export default function AnomalyReportSection({ activeSubTab, onSubTabChange }) {
     });
   }, [newSearchTerm, newSelectedChannel, selectedNewAnomType]);
 
+  // 7월 품목분류 이상 상품 필터링
+  const filteredJulyAnomalies = useMemo(() => {
+    return JULY_PRODUCT_ANOMALIES.filter(item => {
+      const matchSearch =
+        item.bizName.toLowerCase().includes(julySearchTerm.toLowerCase()) ||
+        item.productName.toLowerCase().includes(julySearchTerm.toLowerCase()) ||
+        item.bizNo.includes(julySearchTerm);
+
+      const matchChannel = selectedJulyChannel === 'ALL' || item.channel === selectedJulyChannel;
+      const matchType = selectedJulyType === 'ALL' || item.type === selectedJulyType;
+
+      return matchSearch && matchChannel && matchType;
+    });
+  }, [julySearchTerm, selectedJulyChannel, selectedJulyType]);
+
+  const julyAnomaliesStats = useMemo(() => {
+    const rawAsProc = JULY_PRODUCT_ANOMALIES.filter(x => x.type === 'RAW_AS_PROC');
+    const procAsLive = JULY_PRODUCT_ANOMALIES.filter(x => x.type === 'PROC_AS_LIVESTOCK');
+    const procAsRaw = JULY_PRODUCT_ANOMALIES.filter(x => x.type === 'PROC_AS_RAW');
+
+    const totalSales = JULY_PRODUCT_ANOMALIES.reduce((acc, x) => acc + x.sales, 0);
+    const totalCoupon = JULY_PRODUCT_ANOMALIES.reduce((acc, x) => acc + x.coupon, 0);
+    const rawAsProcSales = rawAsProc.reduce((acc, x) => acc + x.sales, 0);
+    const procAsLiveSales = procAsLive.reduce((acc, x) => acc + x.sales, 0);
+    const procAsRawSales = procAsRaw.reduce((acc, x) => acc + x.sales, 0);
+
+    return {
+      totalCount: JULY_PRODUCT_ANOMALIES.length,
+      totalSales,
+      totalCoupon,
+      rawAsProcCount: rawAsProc.length,
+      rawAsProcSales,
+      procAsLiveCount: procAsLive.length,
+      procAsLiveSales,
+      procAsRawCount: procAsRaw.length,
+      procAsRawSales,
+    };
+  }, []);
+
   const newAnomaliesStats = useMemo(() => {
     const rawAsProc = AUGUST_NEW_PRODUCT_ANOMALIES.filter(x => x.type === 'RAW_AS_PROC');
     const procAsLive = AUGUST_NEW_PRODUCT_ANOMALIES.filter(x => x.type === 'PROC_AS_LIVESTOCK');
@@ -122,6 +167,21 @@ export default function AnomalyReportSection({ activeSubTab, onSubTabChange }) {
       {/* 상단 서브 탭 네비게이션 */}
       <div className="bg-white p-2 rounded-xl border border-slate-200 shadow-xs flex flex-wrap items-center gap-1.5">
         <button
+          onClick={() => setSubTab('july_anom')}
+          className={`px-3.5 py-2 rounded-lg font-bold text-xs transition-all flex items-center gap-1.5 cursor-pointer ${
+            subTab === 'july_anom'
+              ? 'bg-rose-700 text-white shadow-xs'
+              : 'text-slate-600 hover:bg-slate-100'
+          }`}
+        >
+          <AlertCircle className="w-4 h-4 text-amber-300" />
+          <span>1. 7월 품목분류 오류 ({JULY_PRODUCT_ANOMALIES.length}건)</span>
+          <span className="text-[10px] px-1.5 py-0.2 bg-rose-900 text-white rounded-full font-semibold">
+            7월 시트 전수검토
+          </span>
+        </button>
+
+        <button
           onClick={() => setSubTab('august_new')}
           className={`px-3.5 py-2 rounded-lg font-bold text-xs transition-all flex items-center gap-1.5 cursor-pointer ${
             subTab === 'august_new'
@@ -130,24 +190,24 @@ export default function AnomalyReportSection({ activeSubTab, onSubTabChange }) {
           }`}
         >
           <Sparkles className="w-4 h-4 text-amber-300" />
-          <span>1. 8월 신규 상품 품목분류 감사 ({AUGUST_NEW_PRODUCT_ANOMALIES.length}건 이상치)</span>
+          <span>2. 8월 품목분류 오류 ({AUGUST_NEW_PRODUCT_ANOMALIES.length}건)</span>
           <span className="text-[10px] px-1.5 py-0.2 bg-purple-900 text-white rounded-full font-semibold">
-            순수신규 293건 정밀분석
+            8월 신규 293건 감사
           </span>
         </button>
 
         <button
-          onClick={() => setSubTab('decreased')}
+          onClick={() => setSubTab('category')}
           className={`px-3.5 py-2 rounded-lg font-bold text-xs transition-all flex items-center gap-1.5 cursor-pointer ${
-            subTab === 'decreased'
+            subTab === 'category'
               ? 'bg-amber-600 text-white shadow-xs'
               : 'text-slate-600 hover:bg-slate-100'
           }`}
         >
-          <TrendingDown className="w-4 h-4" />
-          <span>2. 누적 실적 역전 규명 및 허위 판정 해소 (1건 확정)</span>
+          <AlertTriangle className="w-4 h-4" />
+          <span>3. 7월 ➡️ 8월 품목분류 변경 ({ITEM_ANOMALIES.length}건)</span>
           <span className="text-[10px] px-1.5 py-0.2 bg-amber-800 text-white rounded-full font-semibold">
-            더봄·지마켓 착시 해명완료
+            카테고리 변동
           </span>
         </button>
 
@@ -160,45 +220,294 @@ export default function AnomalyReportSection({ activeSubTab, onSubTabChange }) {
           }`}
         >
           <TableProperties className="w-4 h-4" />
-          <span>3. 피벗테이블 수동집계 교차검증 (오차 0원 일치)</span>
+          <span>4. 피벗테이블 수동집계 교차검증 (오차 0원)</span>
         </button>
 
         <button
-          onClick={() => setSubTab('category')}
+          onClick={() => setSubTab('decreased')}
           className={`px-3.5 py-2 rounded-lg font-bold text-xs transition-all flex items-center gap-1.5 cursor-pointer ${
-            subTab === 'category'
-              ? 'bg-rose-600 text-white shadow-xs'
+            subTab === 'decreased'
+              ? 'bg-blue-600 text-white shadow-xs'
               : 'text-slate-600 hover:bg-slate-100'
           }`}
         >
-          <AlertTriangle className="w-4 h-4" />
-          <span>4. 기존 상품 품목분류 변경 이상건 ({ITEM_ANOMALIES.length}건)</span>
+          <TrendingDown className="w-4 h-4" />
+          <span>5. 누적 실적 역전 규명 (착시해소 & 1건 확정)</span>
         </button>
 
         <button
           onClick={() => setSubTab('top_vendors')}
           className={`px-3.5 py-2 rounded-lg font-bold text-xs transition-all flex items-center gap-1.5 cursor-pointer ${
             subTab === 'top_vendors'
-              ? 'bg-blue-600 text-white shadow-xs'
+              ? 'bg-emerald-700 text-white shadow-xs'
               : 'text-slate-600 hover:bg-slate-100'
           }`}
         >
           <Award className="w-4 h-4" />
-          <span>5. 쿠폰 800만 한도 상위 소진 업체 (Top 10)</span>
+          <span>6. 쿠폰 800만 한도 상위 업체 (Top 10)</span>
         </button>
 
         <button
           onClick={() => setSubTab('compliance')}
           className={`px-3.5 py-2 rounded-lg font-bold text-xs transition-all flex items-center gap-1.5 cursor-pointer ${
             subTab === 'compliance'
-              ? 'bg-emerald-700 text-white shadow-xs'
+              ? 'bg-slate-800 text-white shadow-xs'
               : 'text-slate-600 hover:bg-slate-100'
           }`}
         >
           <ShieldCheck className="w-4 h-4" />
-          <span>6. 사업 규정 준수 전수 검토 (100% 준수)</span>
+          <span>7. 사업 규정 준수 검토</span>
         </button>
       </div>
+
+      {/* 1. 7월 품목분류 오류 탭 */}
+      {subTab === 'july_anom' && (
+        <div className="space-y-6">
+          <div className="bg-rose-50 border-l-4 border-rose-600 p-4 rounded-r-xl shadow-xs">
+            <div className="flex items-start gap-3">
+              <AlertCircle className="w-5 h-5 text-rose-600 shrink-0 mt-0.5" />
+              <div className="text-xs text-rose-900 space-y-1">
+                <p className="font-bold text-sm">
+                  ⚠️ 7월 실적 취합 시 품목분류 오기재 이상치 전수 감사 결과 (총 {JULY_PRODUCT_ANOMALIES.length}건)
+                </p>
+                <p className="text-rose-800 leading-relaxed">
+                  7월 참여 데이터(총 1,305행) 내에서 유통사에 등록된 카테고리와 실제 상품명/원물을 전수 정밀 대조한 결과, 
+                  <b>신선 농산물 원물인데 가공식품으로 오등록된 품목</b>, <b>조미가공육(떡갈비·돈까스·양념육)인데 축산물 생육으로 오등록된 품목</b>, 
+                  <b>가공완제품(즙·기름·떡)인데 1차 농산물로 오등록된 품목</b> 등 <b>총 {JULY_PRODUCT_ANOMALIES.length}건</b>의 이상 분류가 확인되었습니다.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* 3대 이상치 유형별 KPI 요약 카드 */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            <div 
+              onClick={() => setSelectedJulyType(selectedJulyType === 'RAW_AS_PROC' ? 'ALL' : 'RAW_AS_PROC')}
+              className={`p-4 rounded-xl border transition-all cursor-pointer ${
+                selectedJulyType === 'RAW_AS_PROC' 
+                  ? 'bg-rose-50 border-rose-400 ring-2 ring-rose-300' 
+                  : 'bg-white border-slate-200 hover:border-rose-300 shadow-xs'
+              }`}
+            >
+              <div className="flex items-center justify-between text-xs text-rose-700 font-bold mb-1">
+                <span>1. 농산물 원물 ➡️ 가공식품</span>
+                <span className="px-1.5 py-0.2 bg-rose-100 rounded-full font-bold">{julyAnomaliesStats.rawAsProcCount}건</span>
+              </div>
+              <div className="text-lg font-black text-rose-900">
+                {julyAnomaliesStats.rawAsProcSales.toLocaleString()}원
+              </div>
+              <div className="text-[11px] text-slate-500 mt-1">
+                신선 사과, 배, 복숭아, 쌀, 감자 등 원물 누락
+              </div>
+            </div>
+
+            <div 
+              onClick={() => setSelectedJulyType(selectedJulyType === 'PROC_AS_LIVESTOCK' ? 'ALL' : 'PROC_AS_LIVESTOCK')}
+              className={`p-4 rounded-xl border transition-all cursor-pointer ${
+                selectedJulyType === 'PROC_AS_LIVESTOCK' 
+                  ? 'bg-amber-50 border-amber-400 ring-2 ring-amber-300' 
+                  : 'bg-white border-slate-200 hover:border-amber-300 shadow-xs'
+              }`}
+            >
+              <div className="flex items-center justify-between text-xs text-amber-700 font-bold mb-1">
+                <span>2. 조미가공육 ➡️ 축산물</span>
+                <span className="px-1.5 py-0.2 bg-amber-100 rounded-full font-bold">{julyAnomaliesStats.procAsLiveCount}건</span>
+              </div>
+              <div className="text-lg font-black text-amber-900">
+                {julyAnomaliesStats.procAsLiveSales.toLocaleString()}원
+              </div>
+              <div className="text-[11px] text-slate-500 mt-1">
+                떡갈비, 돈까스, 양념불고기, 곰탕 가공육
+              </div>
+            </div>
+
+            <div 
+              onClick={() => setSelectedJulyType(selectedJulyType === 'PROC_AS_RAW' ? 'ALL' : 'PROC_AS_RAW')}
+              className={`p-4 rounded-xl border transition-all cursor-pointer ${
+                selectedJulyType === 'PROC_AS_RAW' 
+                  ? 'bg-indigo-50 border-indigo-400 ring-2 ring-indigo-300' 
+                  : 'bg-white border-slate-200 hover:border-indigo-300 shadow-xs'
+              }`}
+            >
+              <div className="flex items-center justify-between text-xs text-indigo-700 font-bold mb-1">
+                <span>3. 가공완제품 ➡️ 농산물</span>
+                <span className="px-1.5 py-0.2 bg-indigo-100 rounded-full font-bold">{julyAnomaliesStats.procAsRawCount}건</span>
+              </div>
+              <div className="text-lg font-black text-indigo-900">
+                {julyAnomaliesStats.procAsRawSales.toLocaleString()}원
+              </div>
+              <div className="text-[11px] text-slate-500 mt-1">
+                사과즙, 참기름, 들기름, 떡, 한과 등 가공품
+              </div>
+            </div>
+
+            <div 
+              onClick={() => setSelectedJulyType('ALL')}
+              className={`p-4 rounded-xl border transition-all cursor-pointer ${
+                selectedJulyType === 'ALL' 
+                  ? 'bg-slate-100 border-slate-400 ring-2 ring-slate-300' 
+                  : 'bg-white border-slate-200 hover:border-slate-300 shadow-xs'
+              }`}
+            >
+              <div className="flex items-center justify-between text-xs text-slate-700 font-bold mb-1">
+                <span>7월 이상치 전체 합계</span>
+                <span className="px-1.5 py-0.2 bg-slate-200 rounded-full font-bold">{julyAnomaliesStats.totalCount}건</span>
+              </div>
+              <div className="text-lg font-black text-slate-900">
+                {julyAnomaliesStats.totalSales.toLocaleString()}원
+              </div>
+              <div className="text-[11px] text-emerald-600 font-bold mt-1">
+                쿠폰 지원액 {julyAnomaliesStats.totalCoupon.toLocaleString()}원
+              </div>
+            </div>
+          </div>
+
+          {/* 필터 및 검색 바 */}
+          <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-3">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="text-xs font-bold text-slate-600">이상치 유형:</span>
+              <select
+                value={selectedJulyType}
+                onChange={e => setSelectedJulyType(e.target.value)}
+                className="text-xs border border-slate-300 rounded-lg px-2.5 py-1.5 bg-slate-50 font-bold text-slate-700"
+              >
+                <option value="ALL">전체 이상치 ({JULY_PRODUCT_ANOMALIES.length}건)</option>
+                <option value="RAW_AS_PROC">원물 ➡️ 가공식품 ({julyAnomaliesStats.rawAsProcCount}건)</option>
+                <option value="PROC_AS_LIVESTOCK">조미가공육 ➡️ 축산물 ({julyAnomaliesStats.procAsLiveCount}건)</option>
+                <option value="PROC_AS_RAW">가공완제품 ➡️ 농산물 ({julyAnomaliesStats.procAsRawCount}건)</option>
+              </select>
+
+              <span className="text-xs font-bold text-slate-600 ml-2">유통사:</span>
+              <select
+                value={selectedJulyChannel}
+                onChange={e => setSelectedJulyChannel(e.target.value)}
+                className="text-xs border border-slate-300 rounded-lg px-2.5 py-1.5 bg-slate-50 font-bold text-slate-700"
+              >
+                <option value="ALL">전체 채널</option>
+                <option value="네이버">네이버</option>
+                <option value="지마켓">지마켓</option>
+                <option value="롯데ON">롯데ON</option>
+                <option value="온누리마켓">온누리마켓</option>
+                <option value="농가살리기">농가살리기</option>
+                <option value="오아시스">오아시스</option>
+              </select>
+            </div>
+
+            <div className="relative w-full md:w-72">
+              <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
+              <input
+                type="text"
+                placeholder="업체명, 상품명, 사업자번호 검색..."
+                value={julySearchTerm}
+                onChange={e => setJulySearchTerm(e.target.value)}
+                className="w-full pl-9 pr-3 py-1.5 border border-slate-300 rounded-lg text-xs bg-slate-50 focus:bg-white focus:outline-none focus:ring-1 focus:ring-rose-500"
+              />
+            </div>
+          </div>
+
+          {/* 7월 이상치 엑셀 스타일 테이블 */}
+          <div className="bg-white rounded-xl border border-slate-200 shadow-xs overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="excel-table w-full border-collapse border border-slate-300 text-xs">
+                <thead>
+                  <tr className="excel-header">
+                    <th className="excel-border border border-slate-300 w-12">No</th>
+                    <th className="excel-border border border-slate-300">이상치 유형</th>
+                    <th className="excel-border border border-slate-300">구분</th>
+                    <th className="excel-border border border-slate-300">유통사</th>
+                    <th className="excel-border border border-slate-300">판매자명</th>
+                    <th className="excel-border border border-slate-300">사업자번호</th>
+                    <th className="excel-border border border-slate-300 min-w-[240px]">상품명</th>
+                    <th className="excel-border border border-slate-300">7월 현재분류</th>
+                    <th className="excel-border border border-slate-300">권고 정정분류</th>
+                    <th className="excel-border border border-slate-300">7월 매출액</th>
+                    <th className="excel-border border border-slate-300">7월 주문수</th>
+                    <th className="excel-border border border-slate-300">7월 쿠폰지원액</th>
+                    <th className="excel-border border border-slate-300 min-w-[200px]">판정 사유 및 조치 제언</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredJulyAnomalies.map((item, idx) => (
+                    <tr key={item.id} className="hover:bg-slate-50">
+                      <td className="excel-border border border-slate-300 text-center font-medium text-slate-500">
+                        {idx + 1}
+                      </td>
+                      <td className="excel-border border border-slate-300 text-center font-bold">
+                        <span className={`px-2 py-0.5 rounded text-[11px] ${
+                          item.type === 'RAW_AS_PROC' ? 'bg-rose-100 text-rose-800' :
+                          item.type === 'PROC_AS_LIVESTOCK' ? 'bg-amber-100 text-amber-800' :
+                          'bg-indigo-100 text-indigo-800'
+                        }`}>
+                          {item.typeName}
+                        </span>
+                      </td>
+                      <td className="excel-border border border-slate-300 text-center font-medium">
+                        {item.sect}
+                      </td>
+                      <td className="excel-border border border-slate-300 text-center font-medium">
+                        {item.channel}
+                      </td>
+                      <td className="excel-border border border-slate-300 text-center font-bold text-slate-800">
+                        {item.bizName}
+                      </td>
+                      <td className="excel-border border border-slate-300 text-center text-slate-500 font-mono text-[11px]">
+                        {item.bizNo}
+                      </td>
+                      <td className="excel-border border border-slate-300 text-left font-medium text-slate-700">
+                        {item.productName}
+                      </td>
+                      <td className="excel-border border border-slate-300 text-center font-bold text-rose-700 bg-rose-50/50">
+                        {item.currentCat}
+                      </td>
+                      <td className="excel-border border border-slate-300 text-center font-bold text-emerald-700 bg-emerald-50/50">
+                        {item.suggestedCat}
+                      </td>
+                      <td className="excel-border border border-slate-300 text-right font-medium">
+                        {item.sales.toLocaleString()}원
+                      </td>
+                      <td className="excel-border border border-slate-300 text-right font-medium">
+                        {item.orders.toLocaleString()}건
+                      </td>
+                      <td className="excel-border border border-slate-300 text-right font-bold text-emerald-700">
+                        {item.coupon.toLocaleString()}원
+                      </td>
+                      <td className="excel-border border border-slate-300 text-left text-slate-600 text-[11px]">
+                        {item.reason}
+                      </td>
+                    </tr>
+                  ))}
+                  {filteredJulyAnomalies.length === 0 && (
+                    <tr>
+                      <td colSpan={13} className="text-center py-8 text-slate-400">
+                        일치하는 7월 이상치 품목이 없습니다.
+                      </td>
+                    </tr>
+                  )}
+                  {filteredJulyAnomalies.length > 0 && (
+                    <tr className="bg-[#FFFFF2CC] font-bold">
+                      <td colSpan={9} className="excel-border border border-slate-300 text-center font-black">
+                        조회 목록 합계 ({filteredJulyAnomalies.length}건)
+                      </td>
+                      <td className="excel-border border border-slate-300 text-right font-black text-slate-900">
+                        {filteredJulyAnomalies.reduce((a, c) => a + c.sales, 0).toLocaleString()}원
+                      </td>
+                      <td className="excel-border border border-slate-300 text-right font-black text-slate-900">
+                        {filteredJulyAnomalies.reduce((a, c) => a + c.orders, 0).toLocaleString()}건
+                      </td>
+                      <td className="excel-border border border-slate-300 text-right font-black text-emerald-800">
+                        {filteredJulyAnomalies.reduce((a, c) => a + c.coupon, 0).toLocaleString()}원
+                      </td>
+                      <td className="excel-border border border-slate-300 text-center font-bold text-rose-700">
+                        유통사 카테고리 매핑 수정 권고
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* 피벗 교차검증 탭 */}
       {subTab === 'pivot' && (
