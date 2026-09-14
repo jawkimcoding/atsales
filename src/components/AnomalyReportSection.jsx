@@ -24,7 +24,7 @@ import {
   INITIAL_DATA,
   INITIAL_DATA_ORGANIC
 } from '../data/initialData';
-import { AUGUST_NEW_PRODUCT_ANOMALIES } from '../data/augustNewProductAnomalies';
+import { AUGUST_PRODUCT_ANOMALIES } from '../data/augustProductAnomalies';
 import { JULY_PRODUCT_ANOMALIES } from '../data/julyProductAnomalies';
 
 export default function AnomalyReportSection({ activeSubTab, onSubTabChange }) {
@@ -43,12 +43,13 @@ export default function AnomalyReportSection({ activeSubTab, onSubTabChange }) {
   const [selectedJulyChannel, setSelectedJulyChannel] = useState('ALL');
   const [selectedJulyType, setSelectedJulyType] = useState('ALL');
 
-  // 8월 신규 인입 상품 필터링 상태
-  const [selectedNewAnomType, setSelectedNewAnomType] = useState('ALL');
-  const [newSearchTerm, setNewSearchTerm] = useState('');
-  const [newSelectedChannel, setNewSelectedChannel] = useState('ALL');
+  // 8월 품목분류 이상 필터링 상태
+  const [selectedAugScope, setSelectedAugScope] = useState('ALL'); // 'ALL' | 'NEW' | 'CONTINUED'
+  const [selectedAugType, setSelectedAugType] = useState('ALL');
+  const [augSearchTerm, setAugSearchTerm] = useState('');
+  const [selectedAugChannel, setSelectedAugChannel] = useState('ALL');
 
-  // 품목분류 필터링
+  // 품목분류 필터링 (7-8월 변경 38건)
   const filteredCategoryItems = useMemo(() => {
     return ITEM_ANOMALIES.filter(item => {
       const matchSearch =
@@ -71,22 +72,25 @@ export default function AnomalyReportSection({ activeSubTab, onSubTabChange }) {
     });
   }, [searchTerm, selectedChannel, selectedChangeType]);
 
-  // 8월 신규 인입 상품 필터링
-  const filteredNewAnomalies = useMemo(() => {
-    return AUGUST_NEW_PRODUCT_ANOMALIES.filter(item => {
+  // 8월 품목분류 이상 상품 필터링 (총 66건)
+  const filteredAugustAnomalies = useMemo(() => {
+    return AUGUST_PRODUCT_ANOMALIES.filter(item => {
       const matchSearch =
-        item.bizName.toLowerCase().includes(newSearchTerm.toLowerCase()) ||
-        item.productName.toLowerCase().includes(newSearchTerm.toLowerCase()) ||
-        item.bizNo.includes(newSearchTerm);
+        item.bizName.toLowerCase().includes(augSearchTerm.toLowerCase()) ||
+        item.productName.toLowerCase().includes(augSearchTerm.toLowerCase()) ||
+        item.bizNo.includes(augSearchTerm);
 
-      const matchChannel = newSelectedChannel === 'ALL' || item.channel === newSelectedChannel;
-      const matchType = selectedNewAnomType === 'ALL' || item.type === selectedNewAnomType;
+      const matchChannel = selectedAugChannel === 'ALL' || item.channel === selectedAugChannel;
+      const matchType = selectedAugType === 'ALL' || item.type === selectedAugType;
+      const matchScope =
+        selectedAugScope === 'ALL' ||
+        (selectedAugScope === 'NEW' ? item.isNewInAug : !item.isNewInAug);
 
-      return matchSearch && matchChannel && matchType;
+      return matchSearch && matchChannel && matchType && matchScope;
     });
-  }, [newSearchTerm, newSelectedChannel, selectedNewAnomType]);
+  }, [augSearchTerm, selectedAugChannel, selectedAugType, selectedAugScope]);
 
-  // 7월 품목분류 이상 상품 필터링
+  // 7월 품목분류 이상 상품 필터링 (총 45건)
   const filteredJulyAnomalies = useMemo(() => {
     return JULY_PRODUCT_ANOMALIES.filter(item => {
       const matchSearch =
@@ -125,27 +129,33 @@ export default function AnomalyReportSection({ activeSubTab, onSubTabChange }) {
     };
   }, []);
 
-  const newAnomaliesStats = useMemo(() => {
-    const rawAsProc = AUGUST_NEW_PRODUCT_ANOMALIES.filter(x => x.type === 'RAW_AS_PROC');
-    const procAsLive = AUGUST_NEW_PRODUCT_ANOMALIES.filter(x => x.type === 'PROC_AS_LIVESTOCK');
-    const procAsRaw = AUGUST_NEW_PRODUCT_ANOMALIES.filter(x => x.type === 'PROC_AS_RAW');
-    const special = AUGUST_NEW_PRODUCT_ANOMALIES.filter(x => x.type === 'SPECIAL_ITEM');
+  const augustAnomaliesStats = useMemo(() => {
+    const rawAsProc = AUGUST_PRODUCT_ANOMALIES.filter(x => x.type === 'RAW_AS_PROC');
+    const procAsLive = AUGUST_PRODUCT_ANOMALIES.filter(x => x.type === 'PROC_AS_LIVESTOCK');
+    const procAsRaw = AUGUST_PRODUCT_ANOMALIES.filter(x => x.type === 'PROC_AS_RAW');
+    const newItems = AUGUST_PRODUCT_ANOMALIES.filter(x => x.isNewInAug);
+    const contItems = AUGUST_PRODUCT_ANOMALIES.filter(x => !x.isNewInAug);
 
-    const totalSales = AUGUST_NEW_PRODUCT_ANOMALIES.reduce((acc, x) => acc + x.sales, 0);
+    const totalSales = AUGUST_PRODUCT_ANOMALIES.reduce((acc, x) => acc + x.sales, 0);
+    const totalCoupon = AUGUST_PRODUCT_ANOMALIES.reduce((acc, x) => acc + x.coupon, 0);
     const rawAsProcSales = rawAsProc.reduce((acc, x) => acc + x.sales, 0);
     const procAsLiveSales = procAsLive.reduce((acc, x) => acc + x.sales, 0);
     const procAsRawSales = procAsRaw.reduce((acc, x) => acc + x.sales, 0);
 
     return {
-      totalCount: AUGUST_NEW_PRODUCT_ANOMALIES.length,
+      totalCount: AUGUST_PRODUCT_ANOMALIES.length,
       totalSales,
+      totalCoupon,
       rawAsProcCount: rawAsProc.length,
       rawAsProcSales,
       procAsLiveCount: procAsLive.length,
       procAsLiveSales,
       procAsRawCount: procAsRaw.length,
       procAsRawSales,
-      specialCount: special.length
+      newCount: newItems.length,
+      newSales: newItems.reduce((acc, x) => acc + x.sales, 0),
+      contCount: contItems.length,
+      contSales: contItems.reduce((acc, x) => acc + x.sales, 0)
     };
   }, []);
 
@@ -190,9 +200,9 @@ export default function AnomalyReportSection({ activeSubTab, onSubTabChange }) {
           }`}
         >
           <Sparkles className="w-4 h-4 text-amber-300" />
-          <span>2. 8월 품목분류 오류 ({AUGUST_NEW_PRODUCT_ANOMALIES.length}건)</span>
+          <span>2. 8월 품목분류 오류 ({AUGUST_PRODUCT_ANOMALIES.length}건)</span>
           <span className="text-[10px] px-1.5 py-0.2 bg-purple-900 text-white rounded-full font-semibold">
-            8월 신규 293건 감사
+            8월 시트 전수검토
           </span>
         </button>
 
@@ -1011,7 +1021,7 @@ export default function AnomalyReportSection({ activeSubTab, onSubTabChange }) {
         </div>
       )}
 
-      {/* 5. 8월 신규 인입 상품 품목분류 감사 탭 */}
+      {/* 2. 8월 품목분류 오류 탭 */}
       {subTab === 'august_new' && (
         <div className="space-y-6">
           {/* 배너 알림 */}
@@ -1020,255 +1030,277 @@ export default function AnomalyReportSection({ activeSubTab, onSubTabChange }) {
               <Sparkles className="w-5 h-5 text-purple-600 shrink-0 mt-0.5" />
               <div className="text-xs text-purple-950 space-y-1">
                 <p className="font-bold text-sm">
-                  🆕 7월 시트 대비 8월 순수 신규 인입 상품 품목분류 이상치 감사 리포트 (총 {AUGUST_NEW_PRODUCT_ANOMALIES.length}건)
+                  💡 8월 실적 취합 시 품목분류 오기재 이상치 전수 감사 결과 (총 {AUGUST_PRODUCT_ANOMALIES.length}건)
                 </p>
                 <p className="text-purple-900 leading-relaxed">
-                  7월 시트(1,305행)와 8월 시트(1,650행)를 전수 대조하여, <b>7월부터 판매 중이던 기존 상품 1,334건을 정확히 제외</b>하고 <b>7월에 전혀 없다가 8월에 새로 들어온 순수 신규 상품 293건</b>을 선별하였습니다. 이 중 1차 원물인데 가공식품으로 오등록되거나, 조미가공육인데 축산물로 오등록된 <b>{AUGUST_NEW_PRODUCT_ANOMALIES.length}건의 품목분류 이상치</b>를 자의적 전문 판단으로 감사한 결과입니다.
+                  8월 실적 로우데이터(1,651행)를 7월 참여 내역과 1:1 전수 대조하여 자연어 키워드 오인식(친환경 쌀·토마토, 청상추, 유과수원 과일 등)을 100% 제거하였습니다.
+                  <b>농산물 원물인데 가공식품으로 오등록되어 1차 원물 실적이 누락된 품목(영흥농산 깐마늘·양파 1.43억원 등 24건)</b>,
+                  <b>조미가공육(닭갈비·함박스테이크 등)인데 축산물 생육으로 오등록된 품목(태범프레시 등 41건)</b>,
+                  <b>가공완제품인데 농산물로 오등록된 품목(1건)</b> 등 <b>총 {AUGUST_PRODUCT_ANOMALIES.length}건</b>을 엄격 선별하였습니다.
+                  (8월 신규 인입 {augustAnomaliesStats.newCount}건 / 기존 참여 지속 {augustAnomaliesStats.contCount}건)
                 </p>
               </div>
             </div>
           </div>
 
-          {/* 4대 이상치 유형별 KPI 요약 카드 */}
+          {/* 4대 KPI 요약 카드 */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
             <div 
-              onClick={() => setSelectedNewAnomType(selectedNewAnomType === 'RAW_AS_PROC' ? 'ALL' : 'RAW_AS_PROC')}
+              onClick={() => setSelectedAugType(selectedAugType === 'RAW_AS_PROC' ? 'ALL' : 'RAW_AS_PROC')}
               className={`p-4 rounded-xl border transition-all cursor-pointer ${
-                selectedNewAnomType === 'RAW_AS_PROC' 
+                selectedAugType === 'RAW_AS_PROC' 
                   ? 'bg-rose-50 border-rose-400 ring-2 ring-rose-300' 
                   : 'bg-white border-slate-200 hover:border-rose-300 shadow-xs'
               }`}
             >
               <div className="flex items-center justify-between text-xs text-rose-700 font-bold mb-1">
-                <span>1. 농산물 원물 ➡️ 가공식품 오등록</span>
-                <span className="px-1.5 py-0.2 bg-rose-100 rounded-full font-bold">{newAnomaliesStats.rawAsProcCount}건</span>
+                <span>1. 원물 ➡️ 가공식품</span>
+                <span className="px-1.5 py-0.2 bg-rose-100 rounded-full font-bold">{augustAnomaliesStats.rawAsProcCount}건</span>
               </div>
               <div className="text-lg font-black text-rose-900">
-                {newAnomaliesStats.rawAsProcSales.toLocaleString()}원
+                {augustAnomaliesStats.rawAsProcSales.toLocaleString()}원
               </div>
               <div className="text-[11px] text-slate-500 mt-1">
-                영흥농산 깐마늘·햇양파(1.43억), 청실농원 배, 따순농장 파프리카 등
+                영흥농산 깐마늘(1.27억)·양파(1,535만) 등 원물 누락
               </div>
             </div>
 
             <div 
-              onClick={() => setSelectedNewAnomType(selectedNewAnomType === 'PROC_AS_LIVESTOCK' ? 'ALL' : 'PROC_AS_LIVESTOCK')}
+              onClick={() => setSelectedAugType(selectedAugType === 'PROC_AS_LIVESTOCK' ? 'ALL' : 'PROC_AS_LIVESTOCK')}
               className={`p-4 rounded-xl border transition-all cursor-pointer ${
-                selectedNewAnomType === 'PROC_AS_LIVESTOCK' 
+                selectedAugType === 'PROC_AS_LIVESTOCK' 
                   ? 'bg-amber-50 border-amber-400 ring-2 ring-amber-300' 
                   : 'bg-white border-slate-200 hover:border-amber-300 shadow-xs'
               }`}
             >
               <div className="flex items-center justify-between text-xs text-amber-700 font-bold mb-1">
-                <span>2. 조미가공육 ➡️ 축산물 오등록</span>
-                <span className="px-1.5 py-0.2 bg-amber-100 rounded-full font-bold">{newAnomaliesStats.procAsLiveCount}건</span>
+                <span>2. 조미가공육 ➡️ 축산물</span>
+                <span className="px-1.5 py-0.2 bg-amber-100 rounded-full font-bold">{augustAnomaliesStats.procAsLiveCount}건</span>
               </div>
               <div className="text-lg font-black text-amber-900">
-                {newAnomaliesStats.procAsLiveSales.toLocaleString()}원
+                {augustAnomaliesStats.procAsLiveSales.toLocaleString()}원
               </div>
               <div className="text-[11px] text-slate-500 mt-1">
-                태범프레시 순살닭갈비·함박스테이크, 새나라 안동찜닭 등
+                태범프레시 순살닭갈비·함박스테이크 등
               </div>
             </div>
 
             <div 
-              onClick={() => setSelectedNewAnomType(selectedNewAnomType === 'PROC_AS_RAW' ? 'ALL' : 'PROC_AS_RAW')}
+              onClick={() => setSelectedAugType(selectedAugType === 'PROC_AS_RAW' ? 'ALL' : 'PROC_AS_RAW')}
               className={`p-4 rounded-xl border transition-all cursor-pointer ${
-                selectedNewAnomType === 'PROC_AS_RAW' 
+                selectedAugType === 'PROC_AS_RAW' 
                   ? 'bg-indigo-50 border-indigo-400 ring-2 ring-indigo-300' 
                   : 'bg-white border-slate-200 hover:border-indigo-300 shadow-xs'
               }`}
             >
               <div className="flex items-center justify-between text-xs text-indigo-700 font-bold mb-1">
-                <span>3. 가공완제품 ➡️ 농산물 오등록</span>
-                <span className="px-1.5 py-0.2 bg-indigo-100 rounded-full font-bold">{newAnomaliesStats.procAsRawCount}건</span>
+                <span>3. 가공완제품 ➡️ 농산물</span>
+                <span className="px-1.5 py-0.2 bg-indigo-100 rounded-full font-bold">{augustAnomaliesStats.procAsRawCount}건</span>
               </div>
               <div className="text-lg font-black text-indigo-900">
-                {newAnomaliesStats.procAsRawSales.toLocaleString()}원
+                {augustAnomaliesStats.procAsRawSales.toLocaleString()}원
               </div>
               <div className="text-[11px] text-slate-500 mt-1">
-                아침햇살 100% 사과즙 NFC착즙 완제품 팩 등
+                아침햇살 사과즙 완제품 팩
               </div>
             </div>
 
             <div 
-              onClick={() => setSelectedNewAnomType(selectedNewAnomType === 'SPECIAL_ITEM' ? 'ALL' : 'SPECIAL_ITEM')}
+              onClick={() => { setSelectedAugType('ALL'); setSelectedAugScope('ALL'); }}
               className={`p-4 rounded-xl border transition-all cursor-pointer ${
-                selectedNewAnomType === 'SPECIAL_ITEM' 
+                selectedAugType === 'ALL' && selectedAugScope === 'ALL'
                   ? 'bg-purple-50 border-purple-400 ring-2 ring-purple-300' 
                   : 'bg-white border-slate-200 hover:border-purple-300 shadow-xs'
               }`}
             >
               <div className="flex items-center justify-between text-xs text-purple-700 font-bold mb-1">
-                <span>4. 이색/특이 품목 (사업취지 검토)</span>
-                <span className="px-1.5 py-0.2 bg-purple-100 rounded-full font-bold">{newAnomaliesStats.specialCount}건</span>
+                <span>8월 이상치 전체 합계</span>
+                <span className="px-1.5 py-0.2 bg-purple-100 rounded-full font-bold">{augustAnomaliesStats.totalCount}건</span>
               </div>
-              <div className="text-lg font-black text-purple-900">
-                실적 모니터링
+              <div className="text-lg font-black text-purple-950">
+                {augustAnomaliesStats.totalSales.toLocaleString()}원
               </div>
-              <div className="text-[11px] text-slate-500 mt-1">
-                곤충킹 식용 귀뚜라미, 고소애 쿠키·쌀빵 등 7개 신규 품목
+              <div className="text-[11px] text-emerald-600 font-bold mt-1">
+                쿠폰 지원액 {augustAnomaliesStats.totalCoupon.toLocaleString()}원
               </div>
             </div>
           </div>
 
           {/* 검색 및 필터 컨트롤 */}
-          <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-3">
             <div className="flex flex-wrap items-center gap-2">
-              <button
-                onClick={() => setSelectedNewAnomType('ALL')}
-                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors ${
-                  selectedNewAnomType === 'ALL'
-                    ? 'bg-slate-900 text-white'
-                    : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
-                }`}
-              >
-                전체 유형 ({AUGUST_NEW_PRODUCT_ANOMALIES.length})
-              </button>
-              <button
-                onClick={() => setSelectedNewAnomType('RAW_AS_PROC')}
-                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors ${
-                  selectedNewAnomType === 'RAW_AS_PROC'
-                    ? 'bg-rose-600 text-white'
-                    : 'bg-rose-50 text-rose-700 hover:bg-rose-100'
-                }`}
-              >
-                원물 ➡️ 가공식품 ({newAnomaliesStats.rawAsProcCount})
-              </button>
-              <button
-                onClick={() => setSelectedNewAnomType('PROC_AS_LIVESTOCK')}
-                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors ${
-                  selectedNewAnomType === 'PROC_AS_LIVESTOCK'
-                    ? 'bg-amber-600 text-white'
-                    : 'bg-amber-50 text-amber-700 hover:bg-amber-100'
-                }`}
-              >
-                조미가공육 ➡️ 축산물 ({newAnomaliesStats.procAsLiveCount})
-              </button>
-              <button
-                onClick={() => setSelectedNewAnomType('PROC_AS_RAW')}
-                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors ${
-                  selectedNewAnomType === 'PROC_AS_RAW'
-                    ? 'bg-indigo-600 text-white'
-                    : 'bg-indigo-50 text-indigo-700 hover:bg-indigo-100'
-                }`}
-              >
-                가공완제품 ➡️ 농산물 ({newAnomaliesStats.procAsRawCount})
-              </button>
-              <button
-                onClick={() => setSelectedNewAnomType('SPECIAL_ITEM')}
-                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors ${
-                  selectedNewAnomType === 'SPECIAL_ITEM'
-                    ? 'bg-purple-600 text-white'
-                    : 'bg-purple-50 text-purple-700 hover:bg-purple-100'
-                }`}
-              >
-                이색특이품목 ({newAnomaliesStats.specialCount})
-              </button>
-            </div>
+              {/* 인입 구분 필터 */}
+              <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-lg text-xs">
+                <span className="text-[11px] font-bold text-slate-500 px-1">인입:</span>
+                <button
+                  onClick={() => setSelectedAugScope('ALL')}
+                  className={`px-2.5 py-1 rounded text-xs font-bold cursor-pointer transition-colors ${
+                    selectedAugScope === 'ALL' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-600 hover:text-slate-900'
+                  }`}
+                >
+                  전체 ({AUGUST_PRODUCT_ANOMALIES.length})
+                </button>
+                <button
+                  onClick={() => setSelectedAugScope('NEW')}
+                  className={`px-2.5 py-1 rounded text-xs font-bold cursor-pointer transition-colors ${
+                    selectedAugScope === 'NEW' ? 'bg-indigo-600 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'
+                  }`}
+                >
+                  8월 신규 ({augustAnomaliesStats.newCount})
+                </button>
+                <button
+                  onClick={() => setSelectedAugScope('CONTINUED')}
+                  className={`px-2.5 py-1 rounded text-xs font-bold cursor-pointer transition-colors ${
+                    selectedAugScope === 'CONTINUED' ? 'bg-slate-700 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'
+                  }`}
+                >
+                  기존 지속 ({augustAnomaliesStats.contCount})
+                </button>
+              </div>
 
-            <div className="flex items-center gap-2">
+              {/* 유형 필터 */}
               <select
-                value={newSelectedChannel}
-                onChange={(e) => setNewSelectedChannel(e.target.value)}
-                className="px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-50 border border-slate-200 text-slate-700 focus:outline-hidden focus:ring-2 focus:ring-purple-500"
+                value={selectedAugType}
+                onChange={e => setSelectedAugType(e.target.value)}
+                className="text-xs border border-slate-300 rounded-lg px-2.5 py-1.5 bg-slate-50 font-bold text-slate-700"
+              >
+                <option value="ALL">전체 이상치 유형 ({AUGUST_PRODUCT_ANOMALIES.length}건)</option>
+                <option value="RAW_AS_PROC">원물 ➡️ 가공식품 ({augustAnomaliesStats.rawAsProcCount}건)</option>
+                <option value="PROC_AS_LIVESTOCK">조미가공육 ➡️ 축산물 ({augustAnomaliesStats.procAsLiveCount}건)</option>
+                <option value="PROC_AS_RAW">가공완제품 ➡️ 농산물 ({augustAnomaliesStats.procAsRawCount}건)</option>
+              </select>
+
+              {/* 채널 필터 */}
+              <select
+                value={selectedAugChannel}
+                onChange={e => setSelectedAugChannel(e.target.value)}
+                className="text-xs border border-slate-300 rounded-lg px-2.5 py-1.5 bg-slate-50 font-bold text-slate-700"
               >
                 <option value="ALL">전체 유통사</option>
                 {CHANNELS.map(ch => (
                   <option key={ch} value={ch}>{ch}</option>
                 ))}
               </select>
+            </div>
 
-              <div className="relative">
-                <Search className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400" />
-                <input
-                  type="text"
-                  placeholder="업체명, 사업자번호, 상품명 검색"
-                  value={newSearchTerm}
-                  onChange={(e) => setNewSearchTerm(e.target.value)}
-                  className="pl-8 pr-3 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-lg w-48 focus:outline-hidden focus:ring-2 focus:ring-purple-500"
-                />
-              </div>
+            <div className="relative w-full md:w-72">
+              <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
+              <input
+                type="text"
+                placeholder="업체명, 상품명, 사업자번호 검색..."
+                value={augSearchTerm}
+                onChange={e => setAugSearchTerm(e.target.value)}
+                className="w-full pl-9 pr-3 py-1.5 border border-slate-300 rounded-lg text-xs bg-slate-50 focus:bg-white focus:outline-none focus:ring-1 focus:ring-purple-500"
+              />
             </div>
           </div>
 
-          {/* 이상치 테이블 */}
+          {/* 8월 이상치 엑셀 스타일 테이블 */}
           <div className="bg-white rounded-xl border border-slate-200 shadow-xs overflow-hidden">
-            <div className="overflow-x-auto max-h-[600px]">
-              <table className="w-full border-collapse text-xs text-left">
-                <thead className="bg-slate-100 text-slate-700 sticky top-0 z-10 border-b border-slate-200">
-                  <tr>
-                    <th className="p-2.5 font-bold text-center w-12">NO</th>
-                    <th className="p-2.5 font-bold text-center w-24">신규구분</th>
-                    <th className="p-2.5 font-bold text-center w-20">유통사</th>
-                    <th className="p-2.5 font-bold w-36">사업자명</th>
-                    <th className="p-2.5 font-bold w-28">사업자번호</th>
-                    <th className="p-2.5 font-bold min-w-[220px]">상품명</th>
-                    <th className="p-2.5 font-bold text-center w-24">현재분류</th>
-                    <th className="p-2.5 font-bold text-center w-28">권장분류</th>
-                    <th className="p-2.5 font-bold text-right w-24">8월 매출액</th>
-                    <th className="p-2.5 font-bold text-right w-16">주문건수</th>
-                    <th className="p-2.5 font-bold text-right w-20">쿠폰지원금</th>
-                    <th className="p-2.5 font-bold min-w-[200px]">자의적 판단 사유</th>
+            <div className="overflow-x-auto">
+              <table className="excel-table w-full border-collapse border border-slate-300 text-xs">
+                <thead>
+                  <tr className="excel-header">
+                    <th className="excel-border border border-slate-300 w-12">No</th>
+                    <th className="excel-border border border-slate-300">인입 구분</th>
+                    <th className="excel-border border border-slate-300">이상치 유형</th>
+                    <th className="excel-border border border-slate-300">구분</th>
+                    <th className="excel-border border border-slate-300">유통사</th>
+                    <th className="excel-border border border-slate-300">판매자명</th>
+                    <th className="excel-border border border-slate-300">사업자번호</th>
+                    <th className="excel-border border border-slate-300 min-w-[240px]">상품명</th>
+                    <th className="excel-border border border-slate-300">8월 현재분류</th>
+                    <th className="excel-border border border-slate-300">권고 정정분류</th>
+                    <th className="excel-border border border-slate-300">8월 순수매출</th>
+                    <th className="excel-border border border-slate-300">8월 주문수</th>
+                    <th className="excel-border border border-slate-300">8월 쿠폰지원액</th>
+                    <th className="excel-border border border-slate-300 min-w-[200px]">판정 사유 및 조치 제언</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100">
-                  {filteredNewAnomalies.map((item, idx) => (
-                    <tr key={item.id} className="hover:bg-slate-50/80 transition-colors">
-                      <td className="p-2.5 text-center text-slate-400 font-medium">{idx + 1}</td>
-                      <td className="p-2.5 text-center">
-                        <span className={`px-1.5 py-0.5 rounded text-[10px] font-bold ${
-                          item.isNewBiz ? 'bg-indigo-100 text-indigo-800' : 'bg-slate-100 text-slate-700'
+                <tbody>
+                  {filteredAugustAnomalies.map((item, idx) => (
+                    <tr key={item.id} className="hover:bg-slate-50">
+                      <td className="excel-border border border-slate-300 text-center font-medium text-slate-500">
+                        {idx + 1}
+                      </td>
+                      <td className="excel-border border border-slate-300 text-center">
+                        <span className={`px-2 py-0.5 rounded text-[11px] font-bold ${
+                          item.isNewInAug ? 'bg-indigo-100 text-indigo-800' : 'bg-slate-100 text-slate-700'
                         }`}>
                           {item.bizType}
                         </span>
                       </td>
-                      <td className="p-2.5 text-center font-bold text-slate-700">{item.channel}</td>
-                      <td className="p-2.5 font-bold text-slate-900">{item.bizName}</td>
-                      <td className="p-2.5 font-mono text-slate-500 text-[11px]">{item.bizNo}</td>
-                      <td className="p-2.5 font-medium text-slate-900">{item.productName}</td>
-                      <td className="p-2.5 text-center">
-                        <span className="px-2 py-0.5 rounded-full font-bold text-[11px] bg-rose-100 text-rose-800 border border-rose-200">
-                          {item.currentCat}
+                      <td className="excel-border border border-slate-300 text-center font-bold">
+                        <span className={`px-2 py-0.5 rounded text-[11px] ${
+                          item.type === 'RAW_AS_PROC' ? 'bg-rose-100 text-rose-800' :
+                          item.type === 'PROC_AS_LIVESTOCK' ? 'bg-amber-100 text-amber-800' :
+                          'bg-indigo-100 text-indigo-800'
+                        }`}>
+                          {item.typeName}
                         </span>
                       </td>
-                      <td className="p-2.5 text-center">
-                        <span className="px-2 py-0.5 rounded-full font-bold text-[11px] bg-emerald-100 text-emerald-800 border border-emerald-200">
-                          {item.suggestedCat}
-                        </span>
+                      <td className="excel-border border border-slate-300 text-center font-medium">
+                        {item.sect}
                       </td>
-                      <td className="p-2.5 text-right font-black text-slate-900">
+                      <td className="excel-border border border-slate-300 text-center font-medium">
+                        {item.channel}
+                      </td>
+                      <td className="excel-border border border-slate-300 text-center font-bold text-slate-800">
+                        {item.bizName}
+                      </td>
+                      <td className="excel-border border border-slate-300 text-center text-slate-500 font-mono text-[11px]">
+                        {item.bizNo}
+                      </td>
+                      <td className="excel-border border border-slate-300 text-left font-medium text-slate-700">
+                        {item.productName}
+                      </td>
+                      <td className="excel-border border border-slate-300 text-center font-bold text-rose-700 bg-rose-50/50">
+                        {item.currentCat}
+                      </td>
+                      <td className="excel-border border border-slate-300 text-center font-bold text-emerald-700 bg-emerald-50/50">
+                        {item.suggestedCat}
+                      </td>
+                      <td className="excel-border border border-slate-300 text-right font-medium">
                         {item.sales.toLocaleString()}원
                       </td>
-                      <td className="p-2.5 text-right font-medium text-slate-600">
+                      <td className="excel-border border border-slate-300 text-right font-medium">
                         {item.orders.toLocaleString()}건
                       </td>
-                      <td className="p-2.5 text-right font-medium text-purple-700">
+                      <td className="excel-border border border-slate-300 text-right font-bold text-emerald-700">
                         {item.coupon.toLocaleString()}원
                       </td>
-                      <td className="p-2.5 text-slate-600 text-[11px] leading-relaxed">
+                      <td className="excel-border border border-slate-300 text-left text-slate-600 text-[11px]">
                         {item.reason}
                       </td>
                     </tr>
                   ))}
+                  {filteredAugustAnomalies.length === 0 && (
+                    <tr>
+                      <td colSpan={14} className="text-center py-8 text-slate-400">
+                        일치하는 8월 이상치 품목이 없습니다.
+                      </td>
+                    </tr>
+                  )}
+                  {filteredAugustAnomalies.length > 0 && (
+                    <tr className="bg-[#FFFFF2CC] font-bold">
+                      <td colSpan={10} className="excel-border border border-slate-300 text-center font-black">
+                        조회 목록 합계 ({filteredAugustAnomalies.length}건)
+                      </td>
+                      <td className="excel-border border border-slate-300 text-right font-black text-slate-900">
+                        {filteredAugustAnomalies.reduce((a, c) => a + c.sales, 0).toLocaleString()}원
+                      </td>
+                      <td className="excel-border border border-slate-300 text-right font-black text-slate-900">
+                        {filteredAugustAnomalies.reduce((a, c) => a + c.orders, 0).toLocaleString()}건
+                      </td>
+                      <td className="excel-border border border-slate-300 text-right font-black text-emerald-800">
+                        {filteredAugustAnomalies.reduce((a, c) => a + c.coupon, 0).toLocaleString()}원
+                      </td>
+                      <td className="excel-border border border-slate-300 text-center font-bold text-purple-700">
+                        유통사 카테고리 매핑 수정 권고
+                      </td>
+                    </tr>
+                  )}
                 </tbody>
-                <tfoot className="bg-slate-50 font-bold border-t border-slate-200 sticky bottom-0">
-                  <tr>
-                    <td colSpan={8} className="p-3 text-center font-black text-slate-800">
-                      선택 항목 합계 (총 {filteredNewAnomalies.length}건)
-                    </td>
-                    <td className="p-3 text-right font-black text-indigo-900">
-                      {filteredNewAnomalies.reduce((a, c) => a + c.sales, 0).toLocaleString()}원
-                    </td>
-                    <td className="p-3 text-right font-black text-slate-800">
-                      {filteredNewAnomalies.reduce((a, c) => a + c.orders, 0).toLocaleString()}건
-                    </td>
-                    <td className="p-3 text-right font-black text-purple-900">
-                      {filteredNewAnomalies.reduce((a, c) => a + c.coupon, 0).toLocaleString()}원
-                    </td>
-                    <td></td>
-                  </tr>
-                </tfoot>
               </table>
             </div>
           </div>
