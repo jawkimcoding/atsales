@@ -2,7 +2,7 @@ import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { 
   Download, PlusCircle, BarChart3, Table as TableIcon, Layers, 
   AlertTriangle, Sparkles, RefreshCw, CheckCircle2, ChevronDown, 
-  FileSpreadsheet, Clock, Wifi, WifiOff, ShieldCheck, Building2 
+  FileSpreadsheet, Clock, Wifi, WifiOff, ShieldCheck, Building2, Award 
 } from 'lucide-react';
 import {
   INITIAL_DATA,
@@ -20,6 +20,7 @@ import ChartsSection from './components/ChartsSection';
 import TotalSummarySection from './components/TotalSummarySection';
 import AnomalyReportSection from './components/AnomalyReportSection';
 import CompanyTableSection from './components/CompanyTableSection';
+import TopProductsSection from './components/TopProductsSection';
 import UploaderModal from './components/UploaderModal';
 import { 
   fetchAndSyncGoogleSheets, 
@@ -395,6 +396,21 @@ export default function App() {
                 340개사 전수
               </span>
             </button>
+
+            <button
+              onClick={() => setProjectTab("top_products")}
+              className={`px-3.5 py-2 rounded-lg font-bold text-xs transition-all flex items-center gap-1.5 cursor-pointer ${
+                projectTab === "top_products"
+                  ? "bg-amber-700 text-white shadow-sm"
+                  : "bg-amber-50 text-amber-800 hover:bg-amber-100 border border-amber-300"
+              }`}
+            >
+              <Award className="w-3.5 h-3.5 text-amber-500" />
+              <span>🏆 판매 상위 품목 요약</span>
+              <span className="text-[10px] px-1.5 py-0.2 bg-amber-600 text-white rounded-full font-bold">
+                공문 보고서 팩터 100%
+              </span>
+            </button>
           </div>
         </div>
 
@@ -476,6 +492,10 @@ export default function App() {
 
         {projectTab === "companies" && (
           <CompanyTableSection />
+        )}
+
+        {projectTab === "top_products" && (
+          <TopProductsSection />
         )}
 
         {(projectTab === "agri" || projectTab === "organic") && (
