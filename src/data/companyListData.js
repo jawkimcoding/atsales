@@ -1,4 +1,4 @@
-// 2026 aT 온라인 판로지원 농산물/유기농 업체별 실적 데이터 (엑셀 수식 계산 1:1 완벽 일치)
+// 2026 aT 온라인 판로지원 농산물/유기농 업체별 실적 데이터 (엑셀 수식 계산 1:1 완벽 일치 - 최신 구글시트 반영본)
 
 export const AGRI_COMPANY_LIST = [
   {
@@ -52,7 +52,7 @@ export const AGRI_COMPANY_LIST = [
     "count": 0,
     "sales": 0,
     "coupon": 0,
-    "isIncoming": "O",
+    "isIncoming": "",
     "rate": "0.0%",
     "rateNum": 0.0,
     "remain": 8000000
@@ -80,7 +80,7 @@ export const AGRI_COMPANY_LIST = [
     "count": 0,
     "sales": 0,
     "coupon": 0,
-    "isIncoming": "O",
+    "isIncoming": "",
     "rate": "0.0%",
     "rateNum": 0.0,
     "remain": 8000000
@@ -179,7 +179,7 @@ export const AGRI_COMPANY_LIST = [
     "sales": 74676000,
     "coupon": 4947920,
     "isIncoming": "O",
-    "rate": "61.8%",
+    "rate": "61.9%",
     "rateNum": 61.85,
     "remain": 3052080
   },
@@ -585,7 +585,7 @@ export const AGRI_COMPANY_LIST = [
     "sales": 325600,
     "coupon": 43860,
     "isIncoming": "O",
-    "rate": "0.5%",
+    "rate": "0.6%",
     "rateNum": 0.55,
     "remain": 7956140
   },
@@ -1159,7 +1159,7 @@ export const AGRI_COMPANY_LIST = [
     "sales": 2399700,
     "coupon": 51980,
     "isIncoming": "O",
-    "rate": "0.6%",
+    "rate": "0.7%",
     "rateNum": 0.65,
     "remain": 7948020
   },
@@ -1354,7 +1354,7 @@ export const AGRI_COMPANY_LIST = [
     "count": 0,
     "sales": 0,
     "coupon": 0,
-    "isIncoming": "O",
+    "isIncoming": "",
     "rate": "0.0%",
     "rateNum": 0.0,
     "remain": 8000000
@@ -1775,7 +1775,7 @@ export const AGRI_COMPANY_LIST = [
     "sales": 268713,
     "coupon": 28340,
     "isIncoming": "O",
-    "rate": "0.4%",
+    "rate": "0.3%",
     "rateNum": 0.35,
     "remain": 7971660
   },
@@ -1789,7 +1789,7 @@ export const AGRI_COMPANY_LIST = [
     "sales": 11446900,
     "coupon": 956180,
     "isIncoming": "O",
-    "rate": "12.0%",
+    "rate": "11.9%",
     "rateNum": 11.95,
     "remain": 7043820
   },
@@ -2054,7 +2054,7 @@ export const AGRI_COMPANY_LIST = [
     "count": 0,
     "sales": 0,
     "coupon": 0,
-    "isIncoming": "O",
+    "isIncoming": "",
     "rate": "0.0%",
     "rateNum": 0.0,
     "remain": 8000000
@@ -2138,7 +2138,7 @@ export const AGRI_COMPANY_LIST = [
     "count": 0,
     "sales": 0,
     "coupon": 0,
-    "isIncoming": "O",
+    "isIncoming": "",
     "rate": "0.0%",
     "rateNum": 0.0,
     "remain": 8000000
@@ -2250,7 +2250,7 @@ export const AGRI_COMPANY_LIST = [
     "count": 0,
     "sales": 0,
     "coupon": 0,
-    "isIncoming": "O",
+    "isIncoming": "",
     "rate": "0.0%",
     "rateNum": 0.0,
     "remain": 8000000
@@ -2279,7 +2279,7 @@ export const AGRI_COMPANY_LIST = [
     "sales": 113790900,
     "coupon": 2067740,
     "isIncoming": "O",
-    "rate": "25.8%",
+    "rate": "25.9%",
     "rateNum": 25.85,
     "remain": 5932260
   },
@@ -2292,7 +2292,7 @@ export const AGRI_COMPANY_LIST = [
     "count": 0,
     "sales": 0,
     "coupon": 0,
-    "isIncoming": "O",
+    "isIncoming": "",
     "rate": "0.0%",
     "rateNum": 0.0,
     "remain": 8000000
@@ -2447,7 +2447,7 @@ export const AGRI_COMPANY_LIST = [
     "sales": 70241000,
     "coupon": 5268240,
     "isIncoming": "O",
-    "rate": "65.9%",
+    "rate": "65.8%",
     "rateNum": 65.85,
     "remain": 2731760
   },
@@ -2474,7 +2474,7 @@ export const AGRI_COMPANY_LIST = [
     "count": 0,
     "sales": 0,
     "coupon": 0,
-    "isIncoming": "O",
+    "isIncoming": "",
     "rate": "0.0%",
     "rateNum": 0.0,
     "remain": 8000000
@@ -2628,7 +2628,7 @@ export const AGRI_COMPANY_LIST = [
     "count": 0,
     "sales": 0,
     "coupon": 0,
-    "isIncoming": "O",
+    "isIncoming": "",
     "rate": "0.0%",
     "rateNum": 0.0,
     "remain": 8000000
@@ -2726,7 +2726,7 @@ export const AGRI_COMPANY_LIST = [
     "count": 0,
     "sales": 0,
     "coupon": 0,
-    "isIncoming": "O",
+    "isIncoming": "",
     "rate": "0.0%",
     "rateNum": 0.0,
     "remain": 8000000
@@ -2810,7 +2810,7 @@ export const AGRI_COMPANY_LIST = [
     "count": 0,
     "sales": 0,
     "coupon": 0,
-    "isIncoming": "O",
+    "isIncoming": "",
     "rate": "0.0%",
     "rateNum": 0.0,
     "remain": 8000000
@@ -2824,7 +2824,7 @@ export const AGRI_COMPANY_LIST = [
     "count": 0,
     "sales": 0,
     "coupon": 0,
-    "isIncoming": "O",
+    "isIncoming": "",
     "rate": "0.0%",
     "rateNum": 0.0,
     "remain": 8000000
@@ -3118,7 +3118,7 @@ export const AGRI_COMPANY_LIST = [
     "count": 0,
     "sales": 0,
     "coupon": 0,
-    "isIncoming": "O",
+    "isIncoming": "",
     "rate": "0.0%",
     "rateNum": 0.0,
     "remain": 8000000
@@ -3175,7 +3175,7 @@ export const AGRI_COMPANY_LIST = [
     "sales": 4822000,
     "coupon": 731663,
     "isIncoming": "O",
-    "rate": "9.1%",
+    "rate": "9.2%",
     "rateNum": 9.15,
     "remain": 7268337
   },
@@ -3623,7 +3623,7 @@ export const AGRI_COMPANY_LIST = [
     "sales": 220220,
     "coupon": 3890,
     "isIncoming": "O",
-    "rate": "0.0%",
+    "rate": "0.1%",
     "rateNum": 0.05,
     "remain": 7996110
   },
@@ -3664,7 +3664,7 @@ export const AGRI_COMPANY_LIST = [
     "count": 0,
     "sales": 0,
     "coupon": 0,
-    "isIncoming": "O",
+    "isIncoming": "",
     "rate": "0.0%",
     "rateNum": 0.0,
     "remain": 8000000
@@ -3777,7 +3777,7 @@ export const AGRI_COMPANY_LIST = [
     "sales": 51890900,
     "coupon": 3084209,
     "isIncoming": "O",
-    "rate": "38.6%",
+    "rate": "38.5%",
     "rateNum": 38.55,
     "remain": 4915791
   },
@@ -3860,7 +3860,7 @@ export const AGRI_COMPANY_LIST = [
     "count": 0,
     "sales": 0,
     "coupon": 0,
-    "isIncoming": "O",
+    "isIncoming": "",
     "rate": "0.0%",
     "rateNum": 0.0,
     "remain": 8000000
@@ -4466,7 +4466,7 @@ export const ORGANIC_COMPANY_LIST = [
     "sales": 218000,
     "coupon": 43600,
     "isIncoming": "O",
-    "rate": "0.5%",
+    "rate": "0.6%",
     "rateNum": 0.55,
     "remain": 7956400
   },

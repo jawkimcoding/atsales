@@ -3,3 +3,5 @@ node_modules
 *.local
 *_backup.xlsx
 ~$*
+__pycache__/
+scratch/
