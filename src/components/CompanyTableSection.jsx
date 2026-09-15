@@ -27,14 +27,21 @@ export default function CompanyTableSection() {
   const filteredList = useMemo(() => {
     return rawList
       .filter(item => {
-        const matchSearch =
-          item.compName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          item.bizNo.includes(searchTerm);
+        const compNameStr = (item.compName || item.company_name || '').toLowerCase();
+        const bizNoStr = (item.bizNo || item.business_no || '');
+        const searchLower = searchTerm.toLowerCase();
 
+        const matchSearch =
+          !searchTerm ||
+          compNameStr.includes(searchLower) ||
+          bizNoStr.includes(searchLower);
+
+        const channelStr = item.channel || '';
         const matchChannel =
           selectedChannel === 'ALL' ||
-          item.channel.toLowerCase().includes(selectedChannel.toLowerCase()) ||
-          (selectedChannel === '롯데ON' && item.channel.includes('롯데'));
+          channelStr.toLowerCase().includes(selectedChannel.toLowerCase()) ||
+          (selectedChannel === '롯데ON' && channelStr.includes('롯데')) ||
+          (selectedChannel === '롯데온' && channelStr.includes('롯데'));
 
         const matchIncoming =
           selectedIncoming === 'ALL' ||
@@ -51,23 +58,23 @@ export default function CompanyTableSection() {
         let valB = b[sortField];
 
         if (sortField === 'rate') {
-          valA = a.rateNum;
-          valB = b.rateNum;
+          valA = a.rateNum ?? 0;
+          valB = b.rateNum ?? 0;
         }
 
         if (typeof valA === 'string') {
-          return sortAsc ? valA.localeCompare(valB) : valB.localeCompare(valA);
+          return sortAsc ? valA.localeCompare(valB || '') : (valB || '').localeCompare(valA);
         }
-        return sortAsc ? valA - valB : valB - valA;
+        return sortAsc ? (valA || 0) - (valB || 0) : (valB || 0) - (valA || 0);
       });
   }, [rawList, searchTerm, selectedChannel, selectedIncoming, selectedGubun, sortField, sortAsc]);
 
   const totals = useMemo(() => {
     return filteredList.reduce(
       (acc, cur) => {
-        acc.count += cur.count;
-        acc.sales += cur.sales;
-        acc.coupon += cur.coupon;
+        acc.count += cur.count || 0;
+        acc.sales += cur.sales || 0;
+        acc.coupon += cur.coupon || 0;
         if (cur.isIncoming === 'O') acc.incomingCount += 1;
         return acc;
       },
@@ -78,9 +85,9 @@ export default function CompanyTableSection() {
   const baseTotals = useMemo(() => {
     return rawList.reduce(
       (acc, cur) => {
-        acc.count += cur.count;
-        acc.sales += cur.sales;
-        acc.coupon += cur.coupon;
+        acc.count += cur.count || 0;
+        acc.sales += cur.sales || 0;
+        acc.coupon += cur.coupon || 0;
         if (cur.isIncoming === 'O') acc.incomingCount += 1;
         return acc;
       },
@@ -126,7 +133,7 @@ export default function CompanyTableSection() {
                 : 'text-slate-600 hover:text-slate-900'
             }`}
           >
-            🌾 농산물업체 (285개사)
+            🌾 농산물업체 ({AGRI_COMPANY_LIST.length}개사)
           </button>
           <button
             onClick={() => { setActiveType('organic'); setSearchTerm(''); }}
@@ -136,7 +143,7 @@ export default function CompanyTableSection() {
                 : 'text-slate-600 hover:text-slate-900'
             }`}
           >
-            🌿 유기농업체 (55개사)
+            🌿 유기농업체 ({ORGANIC_COMPANY_LIST.length}개사)
           </button>
         </div>
       </div>
@@ -361,15 +368,15 @@ export default function CompanyTableSection() {
                   </td>
                 </tr>
               ) : (
-                filteredList.map((item) => (
+                filteredList.map((item, idx) => (
                   <tr
-                    key={item.no + '-' + item.bizNo}
+                    key={(item.no || idx) + '-' + (item.bizNo || item.business_no || idx)}
                     className={`hover:bg-slate-50 transition-colors ${
                       item.isIncoming === 'O' ? 'bg-white' : 'bg-slate-50/40 text-slate-400'
                     }`}
                   >
                     <td className="p-2.5 text-center text-slate-500 font-mono text-[11px]">
-                      {item.no}
+                      {item.no || idx + 1}
                     </td>
                     <td className="p-2.5 text-center">
                       <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
@@ -381,24 +388,24 @@ export default function CompanyTableSection() {
                       </span>
                     </td>
                     <td className="p-2.5 font-mono text-slate-600 text-[11px]">
-                      {item.bizNo}
+                      {item.bizNo || item.business_no || '-'}
                     </td>
                     <td className="p-2.5 font-bold text-slate-900">
-                      {item.compName}
+                      {item.compName || item.company_name || '-'}
                     </td>
                     <td className="p-2.5 text-center">
                       <span className="px-2 py-0.5 rounded text-[11px] font-semibold bg-slate-100 text-slate-800">
-                        {item.channel}
+                        {item.channel || '-'}
                       </span>
                     </td>
                     <td className="p-2.5 text-right font-medium text-slate-700">
-                      {item.count.toLocaleString()}
+                      {(item.count || 0).toLocaleString()}
                     </td>
                     <td className="p-2.5 text-right font-bold text-slate-900">
-                      {item.sales.toLocaleString()}
+                      {(item.sales || 0).toLocaleString()}
                     </td>
                     <td className="p-2.5 text-right font-black text-slate-900">
-                      {item.coupon.toLocaleString()}
+                      {(item.coupon || 0).toLocaleString()}
                     </td>
                     <td className="p-2.5 text-center">
                       {item.isIncoming === 'O' ? (
@@ -411,15 +418,15 @@ export default function CompanyTableSection() {
                     </td>
                     <td className="p-2.5 text-center">
                       <span className={`px-2 py-0.5 rounded-full text-[11px] font-bold ${
-                        item.rateNum >= 70 ? 'bg-amber-100 text-amber-900 font-black' :
-                        item.rateNum >= 30 ? 'bg-blue-50 text-blue-700' :
+                        (item.rateNum || 0) >= 70 ? 'bg-amber-100 text-amber-900 font-black' :
+                        (item.rateNum || 0) >= 30 ? 'bg-blue-50 text-blue-700' :
                         'bg-slate-100 text-slate-500'
                       }`}>
-                        {item.rate}
+                        {item.rate || '0.0%'}
                       </span>
                     </td>
                     <td className="p-2.5 text-right font-medium text-slate-700">
-                      {item.remain.toLocaleString()}
+                      {(item.remain ?? (8000000 - (item.coupon || 0))).toLocaleString()}
                     </td>
                   </tr>
                 ))
