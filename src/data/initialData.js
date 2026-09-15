@@ -177,11 +177,14 @@ export const ITEM_ANOMALIES = [
     "bizName": "주식회사 태범프레시",
     "bizNo": "832-86-02035",
     "productName": "[홍익상회] 춘천닭갈비 500g x 3팩 국내산닭고기 양념 순살",
-    "cat7": "가공식품",
-    "cat8": "축산물",
+    "cat7_original": "가공식품",
+    "cat8_original": "축산물",
+    "final_category": "축산물",
     "sales7": 0,
     "sales8": 0,
-    "pureSales8": 0
+    "pureSales8": 0,
+    "status": "조치 완료 (구글 시트 반영 완료)",
+    "is_resolved": true
   },
   {
     "type": "농산물",
@@ -189,11 +192,14 @@ export const ITEM_ANOMALIES = [
     "bizName": "주식회사 태범프레시",
     "bizNo": "832-86-02035",
     "productName": "[홍익상회] 춘천 홍익닭갈비 500g x 3팩 국내산 닭고기 양념 순살",
-    "cat7": "가공식품",
-    "cat8": "축산물",
+    "cat7_original": "가공식품",
+    "cat8_original": "축산물",
+    "final_category": "축산물",
     "sales7": 2552440,
     "sales8": 2552440,
-    "pureSales8": 0
+    "pureSales8": 0,
+    "status": "조치 완료 (구글 시트 반영 완료)",
+    "is_resolved": true
   },
   {
     "type": "농산물",
@@ -201,11 +207,14 @@ export const ITEM_ANOMALIES = [
     "bizName": "신선식품",
     "bizNo": "131-35-96215",
     "productName": "[온누리7%혜택]고소한 국산 볶은참깨 200g",
-    "cat7": "농산물",
-    "cat8": "가공식품",
+    "cat7_original": "농산물",
+    "cat8_original": "가공식품",
+    "final_category": "가공식품",
     "sales7": 25600,
     "sales8": 204800,
-    "pureSales8": 179200
+    "pureSales8": 179200,
+    "status": "조치 완료 (구글 시트 반영 완료)",
+    "is_resolved": true
   },
   {
     "type": "농산물",
@@ -213,11 +222,14 @@ export const ITEM_ANOMALIES = [
     "bizName": "두원식품(주)",
     "bizNo": "606-81-52718",
     "productName": "(신선집중) 국내산 한돈 프리미엄 대패 삼겹살 1.2kg",
-    "cat7": "농산물",
-    "cat8": "축산물",
+    "cat7_original": "농산물",
+    "cat8_original": "축산물",
+    "final_category": "축산물",
     "sales7": 51796200,
     "sales8": 55053800,
-    "pureSales8": 3257600
+    "pureSales8": 3257600,
+    "status": "조치 완료 (구글 시트 반영 완료)",
+    "is_resolved": true
   },
   {
     "type": "농산물",
@@ -225,11 +237,14 @@ export const ITEM_ANOMALIES = [
     "bizName": "다모아영농조합법인",
     "bizNo": "613-81-60803",
     "productName": "농협 공동선별 햇 남해 통마늘 3kg(상) 실중량 지리적표시품",
-    "cat7": "축산물",
-    "cat8": "농산물",
+    "cat7_original": "축산물",
+    "cat8_original": "농산물",
+    "final_category": "농산물",
     "sales7": 73800,
     "sales8": 701100,
-    "pureSales8": 627300
+    "pureSales8": 627300,
+    "status": "조치 완료 (구글 시트 반영 완료)",
+    "is_resolved": true
   },
   {
     "type": "농산물",
@@ -237,11 +252,14 @@ export const ITEM_ANOMALIES = [
     "bizName": "청정태안식품",
     "bizNo": "316-01-24597",
     "productName": "김명월 검정콩 청국장가루 1kg(500g2통)",
-    "cat7": "농산물",
-    "cat8": "가공식품",
+    "cat7_original": "농산물",
+    "cat8_original": "가공식품",
+    "final_category": "가공식품",
     "sales7": 74000,
     "sales8": 222000,
-    "pureSales8": 148000
+    "pureSales8": 148000,
+    "status": "조치 완료 (구글 시트 반영 완료)",
+    "is_resolved": true
   },
   {
     "type": "농산물",
@@ -249,11 +267,14 @@ export const ITEM_ANOMALIES = [
     "bizName": "청정태안식품",
     "bizNo": "316-01-24597",
     "productName": "김명월 검정콩 청국장가루 1kg(500g2통)",
-    "cat7": "농산물",
-    "cat8": "가공식품",
+    "cat7_original": "농산물",
+    "cat8_original": "가공식품",
+    "final_category": "가공식품",
     "sales7": 74000,
     "sales8": 259000,
-    "pureSales8": 185000
+    "pureSales8": 185000,
+    "status": "조치 완료 (구글 시트 반영 완료)",
+    "is_resolved": true
   },
   {
     "type": "농산물",
@@ -261,11 +282,14 @@ export const ITEM_ANOMALIES = [
     "bizName": "형지표고버섯",
     "bizNo": "290-94-00335",
     "productName": "형지표고버섯 흑화고 상황버섯 혼합2호 표고 버섯 선물세트",
-    "cat7": "가공식품",
-    "cat8": "농산물",
+    "cat7_original": "가공식품",
+    "cat8_original": "농산물",
+    "final_category": "농산물",
     "sales7": 0,
     "sales8": 0,
-    "pureSales8": 0
+    "pureSales8": 0,
+    "status": "조치 완료 (구글 시트 반영 완료)",
+    "is_resolved": true
   },
   {
     "type": "농산물",
@@ -273,11 +297,14 @@ export const ITEM_ANOMALIES = [
     "bizName": "농부플러스",
     "bizNo": "571-81-00383",
     "productName": "국산 볶음참깨 햇 참깨 볶은참깨 토종 통깨 200g",
-    "cat7": "가공식품",
-    "cat8": "농산물",
+    "cat7_original": "가공식품",
+    "cat8_original": "농산물",
+    "final_category": "가공식품",
     "sales7": 360800,
     "sales8": 1098800,
-    "pureSales8": 738000
+    "pureSales8": 738000,
+    "status": "조치 완료 (구글 시트 반영 완료)",
+    "is_resolved": true
   },
   {
     "type": "농산물",
@@ -285,11 +312,14 @@ export const ITEM_ANOMALIES = [
     "bizName": "농부플러스",
     "bizNo": "571-81-00383",
     "productName": "국산 볶음참깨 햇 참깨 볶은참깨 토종 통깨 150g",
-    "cat7": "가공식품",
-    "cat8": "농산물",
+    "cat7_original": "가공식품",
+    "cat8_original": "농산물",
+    "final_category": "가공식품",
     "sales7": 13900,
     "sales8": 42700,
-    "pureSales8": 28800
+    "pureSales8": 28800,
+    "status": "조치 완료 (구글 시트 반영 완료)",
+    "is_resolved": true
   },
   {
     "type": "농산물",
@@ -297,11 +327,14 @@ export const ITEM_ANOMALIES = [
     "bizName": "듬뿍곡간",
     "bizNo": "181-02-01980",
     "productName": "듬뿍곡간 국내산 볶은 귀리 / 아침식사대용 간식",
-    "cat7": "가공식품",
-    "cat8": "농산물",
+    "cat7_original": "가공식품",
+    "cat8_original": "농산물",
+    "final_category": "가공식품",
     "sales7": 0,
     "sales8": 0,
-    "pureSales8": 0
+    "pureSales8": 0,
+    "status": "조치 완료 (구글 시트 반영 완료)",
+    "is_resolved": true
   },
   {
     "type": "농산물",
@@ -309,11 +342,14 @@ export const ITEM_ANOMALIES = [
     "bizName": "듬뿍곡간",
     "bizNo": "181-02-01980",
     "productName": "듬뿍곡간 국내산 쑥미숫가루 / 선식 식사대용 간식 500g",
-    "cat7": "농산물",
-    "cat8": "가공식품",
+    "cat7_original": "농산물",
+    "cat8_original": "가공식품",
+    "final_category": "가공식품",
     "sales7": 0,
     "sales8": 23800,
-    "pureSales8": 23800
+    "pureSales8": 23800,
+    "status": "조치 완료 (구글 시트 반영 완료)",
+    "is_resolved": true
   },
   {
     "type": "농산물",
@@ -321,11 +357,14 @@ export const ITEM_ANOMALIES = [
     "bizName": "농업회사법인(주)가남농원",
     "bizNo": "416-81-59229",
     "productName": "김승희매실가 신지식 농업인이 만든 매실절임 1kg",
-    "cat7": "가공식품",
-    "cat8": "농산물",
+    "cat7_original": "가공식품",
+    "cat8_original": "농산물",
+    "final_category": "가공식품",
     "sales7": 66000,
     "sales8": 165000,
-    "pureSales8": 99000
+    "pureSales8": 99000,
+    "status": "조치 완료 (구글 시트 반영 완료)",
+    "is_resolved": true
   },
   {
     "type": "농산물",
@@ -333,11 +372,14 @@ export const ITEM_ANOMALIES = [
     "bizName": "농업회사법인(주)가남농원",
     "bizNo": "416-81-59229",
     "productName": "천기누설 매실 장인이만든 매실고 (농축액) 150g",
-    "cat7": "농산물",
-    "cat8": "가공식품",
+    "cat7_original": "농산물",
+    "cat8_original": "가공식품",
+    "final_category": "가공식품",
     "sales7": 0,
     "sales8": 0,
-    "pureSales8": 0
+    "pureSales8": 0,
+    "status": "조치 완료 (구글 시트 반영 완료)",
+    "is_resolved": true
   },
   {
     "type": "농산물",
@@ -345,11 +387,14 @@ export const ITEM_ANOMALIES = [
     "bizName": "농업회사법인(주)가남농원",
     "bizNo": "416-81-59229",
     "productName": "천기누설 매실 장인이만든 매실고 (농축액) 150g",
-    "cat7": "농산물",
-    "cat8": "가공식품",
+    "cat7_original": "농산물",
+    "cat8_original": "가공식품",
+    "final_category": "가공식품",
     "sales7": 0,
     "sales8": 43000,
-    "pureSales8": 43000
+    "pureSales8": 43000,
+    "status": "조치 완료 (구글 시트 반영 완료)",
+    "is_resolved": true
   },
   {
     "type": "농산물",
@@ -357,11 +402,14 @@ export const ITEM_ANOMALIES = [
     "bizName": "농업회사법인 팜팜(주)",
     "bizNo": "177-81-00798",
     "productName": "(품질보증) 산지직송 정품과 완숙토마토 5KG 당일수확 유럽종",
-    "cat7": "가공식품",
-    "cat8": "농산물",
+    "cat7_original": "가공식품",
+    "cat8_original": "농산물",
+    "final_category": "농산물",
     "sales7": 694600,
     "sales8": 5967100,
-    "pureSales8": 5272500
+    "pureSales8": 5272500,
+    "status": "조치 완료 (구글 시트 반영 완료)",
+    "is_resolved": true
   },
   {
     "type": "농산물",
@@ -369,11 +417,14 @@ export const ITEM_ANOMALIES = [
     "bizName": "농업회사법인주식회사 늘해랑",
     "bizNo": "756-87-00841",
     "productName": "조은해남 고구마 못난이 10kg (꿀호박 랜덤발송)",
-    "cat7": "가공식품",
-    "cat8": "농산물",
+    "cat7_original": "가공식품",
+    "cat8_original": "농산물",
+    "final_category": "농산물",
     "sales7": 371800,
     "sales8": 2827100,
-    "pureSales8": 2455300
+    "pureSales8": 2455300,
+    "status": "조치 완료 (구글 시트 반영 완료)",
+    "is_resolved": true
   },
   {
     "type": "농산물",
@@ -381,11 +432,14 @@ export const ITEM_ANOMALIES = [
     "bizName": "초림단지묵",
     "bizNo": "615-14-93195",
     "productName": "초림단지묵 국산 100% 도토리묵 400g 2인분 x 1팩",
-    "cat7": "축산물",
-    "cat8": "가공식품",
+    "cat7_original": "축산물",
+    "cat8_original": "가공식품",
+    "final_category": "가공식품",
     "sales7": 0,
     "sales8": 0,
-    "pureSales8": 0
+    "pureSales8": 0,
+    "status": "조치 완료 (구글 시트 반영 완료)",
+    "is_resolved": true
   },
   {
     "type": "농산물",
@@ -393,11 +447,14 @@ export const ITEM_ANOMALIES = [
     "bizName": "초림단지묵",
     "bizNo": "615-14-93195",
     "productName": "초림단지묵 국산 100% 도토리묵 400g 2인분 x 1팩",
-    "cat7": "축산물",
-    "cat8": "가공식품",
+    "cat7_original": "축산물",
+    "cat8_original": "가공식품",
+    "final_category": "가공식품",
     "sales7": 0,
     "sales8": 30000,
-    "pureSales8": 30000
+    "pureSales8": 30000,
+    "status": "조치 완료 (구글 시트 반영 완료)",
+    "is_resolved": true
   },
   {
     "type": "농산물",
@@ -405,11 +462,14 @@ export const ITEM_ANOMALIES = [
     "bizName": "초림단지묵",
     "bizNo": "615-14-93195",
     "productName": "초림단지묵 국산100% 도토리묵 묵사발 세트",
-    "cat7": "농산물",
-    "cat8": "가공식품",
+    "cat7_original": "농산물",
+    "cat8_original": "가공식품",
+    "final_category": "가공식품",
     "sales7": 0,
     "sales8": 0,
-    "pureSales8": 0
+    "pureSales8": 0,
+    "status": "조치 완료 (구글 시트 반영 완료)",
+    "is_resolved": true
   },
   {
     "type": "농산물",
@@ -417,11 +477,14 @@ export const ITEM_ANOMALIES = [
     "bizName": "초림단지묵",
     "bizNo": "615-14-93195",
     "productName": "초림단지묵 명인 국산 콩물 우묵채 (2인분)",
-    "cat7": "농산물",
-    "cat8": "가공식품",
+    "cat7_original": "농산물",
+    "cat8_original": "가공식품",
+    "final_category": "가공식품",
     "sales7": 0,
     "sales8": 0,
-    "pureSales8": 0
+    "pureSales8": 0,
+    "status": "조치 완료 (구글 시트 반영 완료)",
+    "is_resolved": true
   },
   {
     "type": "농산물",
@@ -429,11 +492,14 @@ export const ITEM_ANOMALIES = [
     "bizName": "초림단지묵",
     "bizNo": "615-14-93195",
     "productName": "초림단지묵 국산 콩물 콩가루 90g 1인분 x 5팩 물만타면 콩국수",
-    "cat7": "농산물",
-    "cat8": "가공식품",
+    "cat7_original": "농산물",
+    "cat8_original": "가공식품",
+    "final_category": "가공식품",
     "sales7": 0,
     "sales8": 0,
-    "pureSales8": 0
+    "pureSales8": 0,
+    "status": "조치 완료 (구글 시트 반영 완료)",
+    "is_resolved": true
   },
   {
     "type": "농산물",
@@ -441,11 +507,14 @@ export const ITEM_ANOMALIES = [
     "bizName": "초림단지묵",
     "bizNo": "615-14-93195",
     "productName": "초림단지묵 국산 콩물 콩가루 90g 1인분 x 5팩 물만타면 콩국수",
-    "cat7": "농산물",
-    "cat8": "가공식품",
+    "cat7_original": "농산물",
+    "cat8_original": "가공식품",
+    "final_category": "가공식품",
     "sales7": 0,
     "sales8": 240000,
-    "pureSales8": 240000
+    "pureSales8": 240000,
+    "status": "조치 완료 (구글 시트 반영 완료)",
+    "is_resolved": true
   },
   {
     "type": "농산물",
@@ -453,11 +522,14 @@ export const ITEM_ANOMALIES = [
     "bizName": "그린몬스터즈",
     "bizNo": "883-95-01472",
     "productName": "당일수확발송 그린몬스터즈 프리미엄 미니오이 1.5kg 농장직거래 여름작기 첫수확 특가할인행사",
-    "cat7": "가공식품",
-    "cat8": "농산물",
+    "cat7_original": "가공식품",
+    "cat8_original": "농산물",
+    "final_category": "농산물",
     "sales7": 100000,
     "sales8": 700000,
-    "pureSales8": 600000
+    "pureSales8": 600000,
+    "status": "조치 완료 (구글 시트 반영 완료)",
+    "is_resolved": true
   },
   {
     "type": "농산물",
@@ -465,11 +537,14 @@ export const ITEM_ANOMALIES = [
     "bizName": "어이딸부각",
     "bizNo": "142-33-00898",
     "productName": "고추크런치 70g 고추부각 튀각 찹쌀 수제 비건",
-    "cat7": "농산물",
-    "cat8": "가공식품",
+    "cat7_original": "농산물",
+    "cat8_original": "가공식품",
+    "final_category": "가공식품",
     "sales7": 0,
     "sales8": 0,
-    "pureSales8": 0
+    "pureSales8": 0,
+    "status": "조치 완료 (구글 시트 반영 완료)",
+    "is_resolved": true
   },
   {
     "type": "농산물",
@@ -477,11 +552,14 @@ export const ITEM_ANOMALIES = [
     "bizName": "어이딸부각",
     "bizNo": "142-33-00898",
     "productName": "어이딸 김부각 선물세트 소 5개입 찹쌀 수제 비건 글루텐프리 저당",
-    "cat7": "농산물",
-    "cat8": "가공식품",
+    "cat7_original": "농산물",
+    "cat8_original": "가공식품",
+    "final_category": "가공식품",
     "sales7": 0,
     "sales8": 690000,
-    "pureSales8": 690000
+    "pureSales8": 690000,
+    "status": "조치 완료 (구글 시트 반영 완료)",
+    "is_resolved": true
   },
   {
     "type": "농산물",
@@ -489,11 +567,14 @@ export const ITEM_ANOMALIES = [
     "bizName": "어이딸부각",
     "bizNo": "142-33-00898",
     "productName": "어이딸 김부각 선물세트 중 8개입 찹쌀 수제 비건 글루텐프리 저당",
-    "cat7": "농산물",
-    "cat8": "가공식품",
+    "cat7_original": "농산물",
+    "cat8_original": "가공식품",
+    "final_category": "가공식품",
     "sales7": 0,
     "sales8": 0,
-    "pureSales8": 0
+    "pureSales8": 0,
+    "status": "조치 완료 (구글 시트 반영 완료)",
+    "is_resolved": true
   },
   {
     "type": "농산물",
@@ -501,11 +582,14 @@ export const ITEM_ANOMALIES = [
     "bizName": "초림단지묵",
     "bizNo": "615-14-93195",
     "productName": "초림단지묵 국산 100% 도토리묵 400g 2인분 x 1팩",
-    "cat7": "농산물",
-    "cat8": "가공식품",
+    "cat7_original": "농산물",
+    "cat8_original": "가공식품",
+    "final_category": "가공식품",
     "sales7": 0,
     "sales8": 0,
-    "pureSales8": 0
+    "pureSales8": 0,
+    "status": "조치 완료 (구글 시트 반영 완료)",
+    "is_resolved": true
   },
   {
     "type": "농산물",
@@ -513,11 +597,14 @@ export const ITEM_ANOMALIES = [
     "bizName": "초림단지묵",
     "bizNo": "615-14-93195",
     "productName": "초림단지묵 국산 100% 도토리묵 400g 2인분 x 1팩",
-    "cat7": "농산물",
-    "cat8": "가공식품",
+    "cat7_original": "농산물",
+    "cat8_original": "가공식품",
+    "final_category": "가공식품",
     "sales7": 0,
     "sales8": 30000,
-    "pureSales8": 30000
+    "pureSales8": 30000,
+    "status": "조치 완료 (구글 시트 반영 완료)",
+    "is_resolved": true
   },
   {
     "type": "농산물",
@@ -525,11 +612,14 @@ export const ITEM_ANOMALIES = [
     "bizName": "초림단지묵",
     "bizNo": "615-14-93195",
     "productName": "초림단지묵 국산 콩물 콩가루 90g 1인분 x 5팩 물만타면 콩국수",
-    "cat7": "농산물",
-    "cat8": "가공식품",
+    "cat7_original": "농산물",
+    "cat8_original": "가공식품",
+    "final_category": "가공식품",
     "sales7": 240000,
     "sales8": 0,
-    "pureSales8": -240000
+    "pureSales8": -240000,
+    "status": "조치 완료 (구글 시트 반영 완료)",
+    "is_resolved": true
   },
   {
     "type": "농산물",
@@ -537,11 +627,14 @@ export const ITEM_ANOMALIES = [
     "bizName": "초림단지묵",
     "bizNo": "615-14-93195",
     "productName": "초림단지묵 국산 콩물 콩가루 90g 1인분 x 5팩 물만타면 콩국수",
-    "cat7": "농산물",
-    "cat8": "가공식품",
+    "cat7_original": "농산물",
+    "cat8_original": "가공식품",
+    "final_category": "가공식품",
     "sales7": 240000,
     "sales8": 240000,
-    "pureSales8": 0
+    "pureSales8": 0,
+    "status": "조치 완료 (구글 시트 반영 완료)",
+    "is_resolved": true
   },
   {
     "type": "농산물",
@@ -549,11 +642,14 @@ export const ITEM_ANOMALIES = [
     "bizName": "초림단지묵",
     "bizNo": "615-14-93195",
     "productName": "초림단지묵 국산 콩물 콩가루 400g 4인분 물만타면 콩국수",
-    "cat7": "농산물",
-    "cat8": "가공식품",
+    "cat7_original": "농산물",
+    "cat8_original": "가공식품",
+    "final_category": "가공식품",
     "sales7": 54000,
     "sales8": 0,
-    "pureSales8": -54000
+    "pureSales8": -54000,
+    "status": "조치 완료 (구글 시트 반영 완료)",
+    "is_resolved": true
   },
   {
     "type": "농산물",
@@ -561,11 +657,14 @@ export const ITEM_ANOMALIES = [
     "bizName": "초림단지묵",
     "bizNo": "615-14-93195",
     "productName": "초림단지묵 국산 콩물 콩가루 400g 4인분 물만타면 콩국수",
-    "cat7": "농산물",
-    "cat8": "가공식품",
+    "cat7_original": "농산물",
+    "cat8_original": "가공식품",
+    "final_category": "가공식품",
     "sales7": 54000,
     "sales8": 54000,
-    "pureSales8": 0
+    "pureSales8": 0,
+    "status": "조치 완료 (구글 시트 반영 완료)",
+    "is_resolved": true
   },
   {
     "type": "농산물",
@@ -573,11 +672,14 @@ export const ITEM_ANOMALIES = [
     "bizName": "케이에프지",
     "bizNo": "120-86-08936",
     "productName": "한돈 제육볶음 (650g X 1개)",
-    "cat7": "가공식품",
-    "cat8": "축산물",
+    "cat7_original": "가공식품",
+    "cat8_original": "축산물",
+    "final_category": "축산물",
     "sales7": 20305100,
     "sales8": 46426900,
-    "pureSales8": 26121800
+    "pureSales8": 26121800,
+    "status": "조치 완료 (구글 시트 반영 완료)",
+    "is_resolved": true
   },
   {
     "type": "농산물",
@@ -585,11 +687,14 @@ export const ITEM_ANOMALIES = [
     "bizName": "케이에프지",
     "bizNo": "120-86-08936",
     "productName": "한돈 칼집 양념구이 (650g X 1개)",
-    "cat7": "가공식품",
-    "cat8": "축산물",
+    "cat7_original": "가공식품",
+    "cat8_original": "축산물",
+    "final_category": "축산물",
     "sales7": 16019900,
     "sales8": 30197000,
-    "pureSales8": 14177100
+    "pureSales8": 14177100,
+    "status": "조치 완료 (구글 시트 반영 완료)",
+    "is_resolved": true
   },
   {
     "type": "농산물",
@@ -597,11 +702,14 @@ export const ITEM_ANOMALIES = [
     "bizName": "케이에프지",
     "bizNo": "120-86-08936",
     "productName": "한돈 성북동식 돼지불백 (650g X 1개)",
-    "cat7": "가공식품",
-    "cat8": "축산물",
+    "cat7_original": "가공식품",
+    "cat8_original": "축산물",
+    "final_category": "축산물",
     "sales7": 10928700,
     "sales8": 21744400,
-    "pureSales8": 10815700
+    "pureSales8": 10815700,
+    "status": "조치 완료 (구글 시트 반영 완료)",
+    "is_resolved": true
   },
   {
     "type": "농산물",
@@ -609,11 +717,14 @@ export const ITEM_ANOMALIES = [
     "bizName": "케이에프지",
     "bizNo": "120-86-08936",
     "productName": "서울식 한우 불고기 밀키트 (800g X 1개)",
-    "cat7": "가공식품",
-    "cat8": "축산물",
+    "cat7_original": "가공식품",
+    "cat8_original": "축산물",
+    "final_category": "축산물",
     "sales7": 6922200,
     "sales8": 15422600,
-    "pureSales8": 8500400
+    "pureSales8": 8500400,
+    "status": "조치 완료 (구글 시트 반영 완료)",
+    "is_resolved": true
   },
   {
     "type": "유기농",
@@ -621,11 +732,14 @@ export const ITEM_ANOMALIES = [
     "bizName": "해담는집",
     "bizNo": "745-96-00315",
     "productName": "해담는집 유기농 고춧가루 500g/200g(순한맛/보통맛/매운맛)",
-    "cat7": "농산물",
-    "cat8": "가공식품",
+    "cat7_original": "농산물",
+    "cat8_original": "가공식품",
+    "final_category": "가공식품",
     "sales7": 208400,
     "sales8": 434900,
-    "pureSales8": 226500
+    "pureSales8": 226500,
+    "status": "조치 완료 (구글 시트 반영 완료)",
+    "is_resolved": true
   }
 ];
 
