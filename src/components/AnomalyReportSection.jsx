@@ -450,6 +450,7 @@ export default function AnomalyReportSection({ activeSubTab, onSubTabChange }) {
                       </td>
                       <td className="excel-border border border-slate-300 text-center font-bold">
                         <span className={`px-2 py-0.5 rounded text-[11px] ${
+                          item.is_resolved ? 'bg-emerald-100 text-emerald-800' :
                           item.type === 'RAW_AS_PROC' ? 'bg-rose-100 text-rose-800' :
                           item.type === 'PROC_AS_LIVESTOCK' ? 'bg-amber-100 text-amber-800' :
                           'bg-indigo-100 text-indigo-800'
@@ -472,7 +473,9 @@ export default function AnomalyReportSection({ activeSubTab, onSubTabChange }) {
                       <td className="excel-border border border-slate-300 text-left font-medium text-slate-700">
                         {item.productName}
                       </td>
-                      <td className="excel-border border border-slate-300 text-center font-bold text-rose-700 bg-rose-50/50">
+                      <td className={`excel-border border border-slate-300 text-center font-bold ${
+                        item.is_resolved ? 'text-emerald-700 bg-emerald-50/50' : 'text-rose-700 bg-rose-50/50'
+                      }`}>
                         {item.currentCat}
                       </td>
                       <td className="excel-border border border-slate-300 text-center font-bold text-emerald-700 bg-emerald-50/50">
@@ -917,15 +920,21 @@ export default function AnomalyReportSection({ activeSubTab, onSubTabChange }) {
                         <td className="p-2.5 font-mono text-slate-500 text-[11px]">{item.bizNo}</td>
                         <td className="p-2.5 text-slate-900 font-medium">{item.productName}</td>
                         <td className="p-2.5 text-center">
-                          <div className="inline-flex items-center gap-1 opacity-70">
-                            <span className={`px-1.5 py-0.2 rounded text-[10px] line-through ${getBadgeColor(c7)}`}>
-                              {c7}
+                          {c7 === c8 ? (
+                            <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${getBadgeColor(c7)}`}>
+                              {c7} (일치)
                             </span>
-                            <ArrowRight className="w-2.5 h-2.5 text-slate-400" />
-                            <span className={`px-1.5 py-0.2 rounded text-[10px] ${getBadgeColor(c8)}`}>
-                              {c8}
-                            </span>
-                          </div>
+                          ) : (
+                            <div className="inline-flex items-center gap-1 opacity-70">
+                              <span className={`px-1.5 py-0.2 rounded text-[10px] line-through ${getBadgeColor(c7)}`}>
+                                {c7}
+                              </span>
+                              <ArrowRight className="w-2.5 h-2.5 text-slate-400" />
+                              <span className={`px-1.5 py-0.2 rounded text-[10px] ${getBadgeColor(c8)}`}>
+                                {c8}
+                              </span>
+                            </div>
+                          )}
                         </td>
                         <td className="p-2.5 text-center">
                           <span className={`px-2.5 py-0.5 rounded-full font-extrabold text-[11px] shadow-2xs border ${getBadgeColor(fCat)}`}>

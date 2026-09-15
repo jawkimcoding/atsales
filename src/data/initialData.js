@@ -282,13 +282,13 @@ export const ITEM_ANOMALIES = [
     "bizName": "형지표고버섯",
     "bizNo": "290-94-00335",
     "productName": "형지표고버섯 흑화고 상황버섯 혼합2호 표고 버섯 선물세트",
-    "cat7_original": "가공식품",
+    "cat7_original": "농산물",
     "cat8_original": "농산물",
     "final_category": "농산물",
     "sales7": 0,
     "sales8": 0,
     "pureSales8": 0,
-    "status": "조치 완료 (구글 시트 반영 완료)",
+    "status": "조치 완료 (구글 시트 7·8월 농산물 정상 등록 확인)",
     "is_resolved": true
   },
   {
