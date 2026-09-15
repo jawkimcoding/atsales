@@ -22,6 +22,7 @@ export const GOOGLE_SHEET_7M_BASELINE_ID = "10aAZ08ShlUqVOKt4Vyx6uxRlLZHAiNh7fUd
 export const GOOGLE_SHEET_CUMULATIVE_ID = "1YhOoPpUDRPve5dfbIYTPURXHH6M8bFLQSssW03riA7Q";
 export const GOOGLE_SHEET_ID = GOOGLE_SHEET_CUMULATIVE_ID;
 export const GOOGLE_SHEET_EXPORT_URL = `https://docs.google.com/spreadsheets/d/${GOOGLE_SHEET_CUMULATIVE_ID}/export?format=xlsx`;
+export const GOOGLE_SHEET_7M_EXPORT_URL = `https://docs.google.com/spreadsheets/d/${GOOGLE_SHEET_7M_BASELINE_ID}/export?format=xlsx`;
 
 // 7월 고정 기집계 기준 데이터 (1차 시트 연계 기준선)
 export const BASE_7M_AGRI = INITIAL_DATA;
@@ -55,42 +56,153 @@ function getCleanValue(row, targets) {
 }
 
 /**
- * 구글 스프레드시트에서 실시간으로 엑셀을 fetch하여 농산물 & 유기농 8월 순수 실적을 자동 산출
+ * 7월 기준 시트와 8월 누적 시트 2개를 동시에 실시간 fetch하여 완벽 동기화
  */
 export async function fetchAndSyncGoogleSheets() {
-  const resp = await fetch(GOOGLE_SHEET_EXPORT_URL);
-  if (!resp.ok) {
-    throw new Error(`구글 시트 다운로드 실패 (상태 코드: ${resp.status})`);
+  try {
+    // 7월 기준 시트와 8월 누적 시트를 병렬 다운로드
+    const [resp7m, resp8m] = await Promise.allSettled([
+      fetch(GOOGLE_SHEET_7M_EXPORT_URL),
+      fetch(GOOGLE_SHEET_EXPORT_URL)
+    ]);
+
+    let arrayBuffer8m = null;
+    if (resp8m.status === 'fulfilled' && resp8m.value.ok) {
+      arrayBuffer8m = await resp8m.value.arrayBuffer();
+      cachedGoogleSheetBuffer = arrayBuffer8m;
+    } else {
+      throw new Error("8월 누적 구글 시트 다운로드 실패");
+    }
+
+    let baseAgri = BASE_7M_AGRI;
+    let baseOrg = BASE_7M_ORGANIC;
+
+    // 7월 시트 파싱 가능 시 동적 기준선으로 활용
+    if (resp7m.status === 'fulfilled' && resp7m.value.ok) {
+      try {
+        const buf7m = await resp7m.value.arrayBuffer();
+        const wb7m = XLSX.read(buf7m, { type: 'array' });
+        const sAgri7 = wb7m.SheetNames.find(s => s.includes('농산물raw') || s.includes('농산물 raw') || s.includes('①')) || wb7m.SheetNames[0];
+        const sOrg7 = wb7m.SheetNames.find(s => s.includes('유기농raw') || s.includes('유기농 raw') || s.includes('②'));
+        if (wb7m.Sheets[sAgri7]) {
+          baseAgri = parseSingleMonthSheet(wb7m.Sheets[sAgri7], CHANNELS, BASE_7M_AGRI, "7월");
+        }
+        if (sOrg7 && wb7m.Sheets[sOrg7]) {
+          baseOrg = parseSingleMonthSheet(wb7m.Sheets[sOrg7], CHANNELS_ORGANIC, BASE_7M_ORGANIC, "7월");
+        }
+      } catch (err7) {
+        console.warn("7월 기준 시트 파싱 경고 (기본값 유지):", err7);
+      }
+    }
+
+    const parsed = parseCompleteWorkbookWithBaseline(arrayBuffer8m, baseAgri, baseOrg);
+    return {
+      ...parsed,
+      rawBuffer: arrayBuffer8m
+    };
+  } catch (err) {
+    console.error("fetchAndSyncGoogleSheets 오류:", err);
+    throw err;
   }
-  const arrayBuffer = await resp.arrayBuffer();
-  cachedGoogleSheetBuffer = arrayBuffer;
-  const parsed = parseCompleteWorkbook(arrayBuffer);
-  return {
-    ...parsed,
-    rawBuffer: arrayBuffer
+}
+
+/**
+ * 단일 월(7월) 로우데이터를 집계하여 기준선 데이터 구조 생성
+ */
+function parseSingleMonthSheet(worksheet, targetChannels, fallbackData, monthLabel = "7월") {
+  if (!worksheet) return fallbackData;
+  const rows = XLSX.utils.sheet_to_json(worksheet, { range: 4, defval: null });
+  if (!rows || rows.length === 0) return fallbackData;
+
+  const result = JSON.parse(JSON.stringify(fallbackData));
+  const cum = {
+    byChannel: {},
+    byCatChannel: {},
+    uniqueBizByChannel: {},
+    allUniqueBiz: new Set()
   };
+
+  targetChannels.forEach(ch => {
+    cum.byChannel[ch] = { sales: 0, coupon: 0, count: 0, products: 0 };
+    cum.uniqueBizByChannel[ch] = new Set();
+  });
+
+  CATEGORIES.forEach(cat => {
+    cum.byCatChannel[cat] = {};
+    targetChannels.forEach(ch => {
+      cum.byCatChannel[cat][ch] = { sales: 0, coupon: 0, count: 0 };
+    });
+  });
+
+  rows.forEach(r => {
+    let chRaw = getCleanValue(r, ['유통사명', '유통사', '채널']);
+    let ch = String(chRaw || '').trim();
+    if (ch.includes("롯데")) ch = "롯데ON";
+
+    const cat = String(getCleanValue(r, ['품목분류', '품목']) || '').trim();
+    const bizNo = String(getCleanValue(r, ['사업자번호', '사업자 등록번호', '사업자등록번호']) || '').trim();
+    const compName = String(getCleanValue(r, ['운영사', '업체명', '판매처', '사업자명']) || '').trim();
+    const cnt = Number(getCleanValue(r, ['판매건수', '판매 건수', '건수'])) || 0;
+    const sales = Number(getCleanValue(r, ['매출액', '매출'])) || 0;
+    const coupon = Number(getCleanValue(r, ['판촉액', '쿠폰사용액', '쿠폰'])) || 0;
+
+    if (targetChannels.includes(ch)) {
+      cum.byChannel[ch].sales += sales;
+      cum.byChannel[ch].coupon += coupon;
+      cum.byChannel[ch].count += cnt;
+      cum.byChannel[ch].products += 1;
+
+      const bizKey = bizNo || compName;
+      if (bizKey) {
+        cum.uniqueBizByChannel[ch].add(bizKey);
+        cum.allUniqueBiz.add(bizKey);
+      }
+
+      if (CATEGORIES.includes(cat)) {
+        cum.byCatChannel[cat][ch].sales += sales;
+        cum.byCatChannel[cat][ch].coupon += coupon;
+        cum.byCatChannel[cat][ch].count += cnt;
+      }
+    }
+  });
+
+  targetChannels.forEach(ch => {
+    result.table2[monthLabel][ch] = cum.byChannel[ch].coupon;
+    result.table3[monthLabel][ch] = cum.byChannel[ch].sales;
+    result.table4[monthLabel][ch] = cum.byChannel[ch].count;
+  });
+
+  CATEGORIES.forEach(cat => {
+    targetChannels.forEach(ch => {
+      result.table5[cat][monthLabel][ch] = cum.byCatChannel[cat][ch].coupon;
+      result.table6[cat][monthLabel][ch] = cum.byCatChannel[cat][ch].sales;
+      result.table7[cat][monthLabel][ch] = cum.byCatChannel[cat][ch].count;
+    });
+  });
+
+  return result;
 }
 
 /**
  * 엑셀 워크북 버퍼를 파싱하여 농산물 및 유기농 데이터 동시 갱신
  */
 export function parseCompleteWorkbook(fileBuffer) {
+  return parseCompleteWorkbookWithBaseline(fileBuffer, BASE_7M_AGRI, BASE_7M_ORGANIC);
+}
+
+export function parseCompleteWorkbookWithBaseline(fileBuffer, baseAgri, baseOrg) {
   const workbook = XLSX.read(fileBuffer, { type: 'array' });
 
-  // 1. 농산물 시트 찾기
   let agriSheetName = workbook.SheetNames.find(s => s.includes('농산물raw') || s.includes('농산물 raw') || s.includes('①'));
   if (!agriSheetName) agriSheetName = workbook.SheetNames[0];
 
-  // 2. 유기농 시트 찾기
   let orgSheetName = workbook.SheetNames.find(s => s.includes('유기농raw') || s.includes('유기농 raw') || s.includes('②'));
 
-  // 농산물 파싱 (누적에서 7월을 차감하여 8월 순수 실적 도출)
-  const agriParsed = parseRawSheet(workbook.Sheets[agriSheetName], CHANNELS, BASE_7M_AGRI, "8월");
+  const agriParsed = parseRawSheet(workbook.Sheets[agriSheetName], CHANNELS, baseAgri, "8월");
 
-  // 유기농 파싱 (누적에서 7월을 차감하여 8월 순수 실적 도출)
-  let orgParsed = BASE_7M_ORGANIC;
+  let orgParsed = baseOrg;
   if (orgSheetName && workbook.Sheets[orgSheetName]) {
-    orgParsed = parseRawSheet(workbook.Sheets[orgSheetName], CHANNELS_ORGANIC, BASE_7M_ORGANIC, "8월");
+    orgParsed = parseRawSheet(workbook.Sheets[orgSheetName], CHANNELS_ORGANIC, baseOrg, "8월");
   }
 
   return {
