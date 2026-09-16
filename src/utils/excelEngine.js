@@ -40,6 +40,18 @@ export function setCachedWorkbookBuffer(buffer) {
 }
 
 /**
+ * 숫자 문자열 내 쉼표, 공백, 하이픈 등 안전 제거 후 숫자 변환
+ */
+function cleanNumber(val) {
+  if (val === null || val === undefined) return 0;
+  if (typeof val === 'number') return isNaN(val) ? 0 : val;
+  const s = String(val).trim().replace(/,/g, '');
+  if (s === '' || s === '-' || s === 'None' || s === '#N/A') return 0;
+  const n = Number(s);
+  return isNaN(n) ? 0 : n;
+}
+
+/**
  * 열 이름 공백 무시하고 안전하게 값을 추출하는 정규화 헬퍼
  * (구글 시트 헤더 ' 판매 건수', ' 매출액', ' 판촉액', '상품명 ' 등 완벽 대응)
  */
@@ -142,9 +154,9 @@ function parseSingleMonthSheet(worksheet, targetChannels, fallbackData, monthLab
     const cat = String(getCleanValue(r, ['품목분류', '품목']) || '').trim();
     const bizNo = String(getCleanValue(r, ['사업자번호', '사업자 등록번호', '사업자등록번호']) || '').trim();
     const compName = String(getCleanValue(r, ['운영사', '업체명', '판매처', '사업자명']) || '').trim();
-    const cnt = Number(getCleanValue(r, ['판매건수', '판매 건수', '건수'])) || 0;
-    const sales = Number(getCleanValue(r, ['매출액', '매출'])) || 0;
-    const coupon = Number(getCleanValue(r, ['판촉액', '쿠폰사용액', '쿠폰'])) || 0;
+    const cnt = cleanNumber(getCleanValue(r, ['판매건수', '판매 건수', '건수']));
+    const sales = cleanNumber(getCleanValue(r, ['매출액', '매출']));
+    const coupon = cleanNumber(getCleanValue(r, ['판촉액', '쿠폰사용액', '쿠폰']));
 
     if (targetChannels.includes(ch)) {
       cum.byChannel[ch].sales += sales;
@@ -259,9 +271,9 @@ function parseRawSheet(worksheet, targetChannels, base7mData, newMonthLabel = "8
     const compNameRaw = getCleanValue(r, ['운영사', '업체명', '판매처', '사업자명']);
     const compName = String(compNameRaw || '').trim();
 
-    const count = Number(getCleanValue(r, ['판매건수', '판매 건수', '건수'])) || 0;
-    const sales = Number(getCleanValue(r, ['매출액', '매출'])) || 0;
-    const coupon = Number(getCleanValue(r, ['판촉액', '쿠폰사용액', '쿠폰'])) || 0;
+    const count = cleanNumber(getCleanValue(r, ['판매건수', '판매 건수', '건수']));
+    const sales = cleanNumber(getCleanValue(r, ['매출액', '매출']));
+    const coupon = cleanNumber(getCleanValue(r, ['판촉액', '쿠폰사용액', '쿠폰']));
 
     if (targetChannels.includes(channel)) {
       cumData.byChannel[channel].sales += sales;

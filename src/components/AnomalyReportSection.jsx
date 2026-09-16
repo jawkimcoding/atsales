@@ -1220,7 +1220,7 @@ export default function AnomalyReportSection({ activeSubTab, onSubTabChange }) {
                 {augustAnomaliesStats.rawAsProcSales.toLocaleString()}원
               </div>
               <div className="text-[11px] text-slate-500 mt-1">
-                영흥농산 깐마늘(1.27억)·양파(1,535만) 등 원물 누락
+                영흥농산 깐마늘·양파 등 구글시트 농산물 정상 반영 완료
               </div>
             </div>
 
@@ -1390,7 +1390,8 @@ export default function AnomalyReportSection({ activeSubTab, onSubTabChange }) {
                         </span>
                       </td>
                       <td className="excel-border border border-slate-300 text-center font-bold">
-                        <span className={`px-2 py-0.5 rounded text-[11px] ${
+                        <span className={`px-2 py-0.5 rounded text-[11px] font-bold ${
+                          item.is_resolved ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' :
                           item.type === 'RAW_AS_PROC' ? 'bg-rose-100 text-rose-800' :
                           item.type === 'PROC_AS_LIVESTOCK' ? 'bg-amber-100 text-amber-800' :
                           'bg-indigo-100 text-indigo-800'
@@ -1413,7 +1414,9 @@ export default function AnomalyReportSection({ activeSubTab, onSubTabChange }) {
                       <td className="excel-border border border-slate-300 text-left font-medium text-slate-700">
                         {item.productName}
                       </td>
-                      <td className="excel-border border border-slate-300 text-center font-bold text-rose-700 bg-rose-50/50">
+                      <td className={`excel-border border border-slate-300 text-center font-bold ${
+                        item.is_resolved ? 'text-emerald-700 bg-emerald-50/50' : 'text-rose-700 bg-rose-50/50'
+                      }`}>
                         {item.currentCat}
                       </td>
                       <td className="excel-border border border-slate-300 text-center font-bold text-emerald-700 bg-emerald-50/50">
