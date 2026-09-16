@@ -8,6 +8,11 @@ import {
   INITIAL_DATA, 
   INITIAL_DATA_ORGANIC 
 } from '../data/initialData.js';
+import { 
+  TOP_PRODUCTS_JULY, 
+  TOP_PRODUCTS_AUGUST_CUMULATIVE, 
+  TOP_PRODUCTS_AUGUST_ONLY 
+} from '../data/topProductsData.js';
 
 /**
  * [구글 스프레드시트 2단계 유기적 연계 아키텍처]
@@ -501,3 +506,129 @@ export async function downloadGoogleSheetExcel(fileName = "2026_aT_온라인마�
 export async function exportToExcel(data, fileName = "(aT&KPC) 실적취합양식_2026 aT농산물온라인마케터_분석(8월)_대시보드포함.xlsx") {
   await downloadComprehensiveExcel(fileName);
 }
+
+/**
+ * 기획전 판매 상위 품목 실적 요약 전용 엑셀 파일 생성 및 다운로드
+ */
+export function downloadTopProductsExcel(
+  period = "august_cumul", 
+  unitMode = "million", 
+  fileName = "2026_aT_기획전_판매_상위품목_실적요약.xlsx"
+) {
+  try {
+    const wb = XLSX.utils.book_new();
+
+    // 1. [종합] 7월-8월 비교 실적 시트
+    const summaryAoa = [
+      ["2026 aT 기획전 판매 상위 품목 실적 종합 요약"],
+      ["※ 농산물·축산물·가공식품 3대 구분 및 세부 품목별 매출/쿠폰소진 실적 비교표"],
+      [],
+      [
+        "구분", "품목", 
+        "8월 누적매출액(원)", "8월 누적쿠폰(원)", "8월 누적매출(백만원)", "8월 누적쿠폰(백만원)", "누적 매출비중(%)",
+        "8월 순수매출액(원)", "8월 순수쿠폰(원)", "8월 순수매출(백만원)", "8월 순수쿠폰(백만원)",
+        "7월 매출액(원)", "7월 쿠폰소진(원)", "7월 매출(백만원)", "7월 쿠폰(백만원)"
+      ]
+    ];
+
+    const totCumul = TOP_PRODUCTS_AUGUST_CUMULATIVE.find(r => r.is_total) || { sales_raw: 1 };
+
+    for (let i = 0; i < TOP_PRODUCTS_AUGUST_CUMULATIVE.length; i++) {
+      const c = TOP_PRODUCTS_AUGUST_CUMULATIVE[i];
+      const j = TOP_PRODUCTS_JULY[i] || {};
+      const o = TOP_PRODUCTS_AUGUST_ONLY[i] || {};
+
+      const share = totCumul.sales_raw > 0 
+        ? Number(((c.sales_raw / totCumul.sales_raw) * 100).toFixed(2)) 
+        : 0;
+
+      summaryAoa.push([
+        c.is_total ? "총 계" : c.category,
+        c.is_total ? "합계" : c.item,
+        c.sales_raw || 0,
+        c.coupon_raw || 0,
+        c.sales_m || 0,
+        c.coupon_m || 0,
+        share,
+        o.sales_raw || 0,
+        o.coupon_raw || 0,
+        o.sales_m || 0,
+        o.coupon_m || 0,
+        j.sales_raw || 0,
+        j.coupon_raw || 0,
+        j.sales_m || 0,
+        j.coupon_m || 0
+      ]);
+    }
+
+    const wsSummary = XLSX.utils.aoa_to_sheet(summaryAoa);
+    wsSummary['!cols'] = [
+      { wch: 12 }, { wch: 26 },
+      { wch: 18 }, { wch: 16 }, { wch: 16 }, { wch: 16 }, { wch: 15 },
+      { wch: 18 }, { wch: 16 }, { wch: 16 }, { wch: 16 },
+      { wch: 18 }, { wch: 16 }, { wch: 16 }, { wch: 16 }
+    ];
+    XLSX.utils.book_append_sheet(wb, wsSummary, "종합_상위품목_비교");
+
+    // 2. 단일 기간 탭 생성 헬퍼
+    const addPeriodSheet = (sheetName, title, subtitle, data) => {
+      const tot = data.find(r => r.is_total) || { sales_raw: 1, sales_m: 1 };
+      const aoa = [
+        [title],
+        [subtitle],
+        [],
+        ["구분", "품목", "매출액(원)", "매출액(백만원)", "쿠폰소진액(원)", "쿠폰소진액(백만원)", "매출비중(%)"]
+      ];
+
+      data.forEach(r => {
+        const share = tot.sales_raw > 0 ? Number(((r.sales_raw / tot.sales_raw) * 100).toFixed(2)) : 0;
+        aoa.push([
+          r.is_total ? "총 계" : r.category,
+          r.is_total ? "합계" : r.item,
+          r.sales_raw || 0,
+          r.sales_m || 0,
+          r.coupon_raw || 0,
+          r.coupon_m || 0,
+          share
+        ]);
+      });
+
+      const ws = XLSX.utils.aoa_to_sheet(aoa);
+      ws['!cols'] = [
+        { wch: 12 }, { wch: 26 }, { wch: 18 }, { wch: 16 }, { wch: 18 }, { wch: 16 }, { wch: 14 }
+      ];
+      XLSX.utils.book_append_sheet(wb, ws, sheetName);
+    };
+
+    addPeriodSheet(
+      "8월_누적실적", 
+      "기획전 판매 상위 품목 실적 (8월 누적)", 
+      "기준: 2026년 7월~8월 누적 기준", 
+      TOP_PRODUCTS_AUGUST_CUMULATIVE
+    );
+
+    addPeriodSheet(
+      "8월_순수실적", 
+      "기획전 판매 상위 품목 실적 (8월 순수 증가분)", 
+      "기준: 8월 누적 - 7월 누적 차감 순수 실적", 
+      TOP_PRODUCTS_AUGUST_ONLY
+    );
+
+    addPeriodSheet(
+      "7월_실적", 
+      "기획전 판매 상위 품목 실적 (7월 결과보고)", 
+      "기준: 2026년 7월 최종 확정 결과보고 기준", 
+      TOP_PRODUCTS_JULY
+    );
+
+    const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+    const blob = new Blob([wbout], {
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    });
+    triggerBlobDownload(blob, fileName);
+  } catch (err) {
+    console.error("상위 품목 엑셀 다운로드 오류:", err);
+    alert("상위 품목 엑셀 생성 중 오류가 발생했습니다: " + err.message);
+  }
+}
+

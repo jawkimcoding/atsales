@@ -8,7 +8,7 @@ import {
   TOP_PRODUCTS_AUGUST_CUMULATIVE, 
   TOP_PRODUCTS_AUGUST_ONLY 
 } from '../data/topProductsData';
-import { downloadComprehensiveExcel } from '../utils/excelEngine';
+import { downloadTopProductsExcel, downloadComprehensiveExcel } from '../utils/excelEngine';
 
 export default function TopProductsSection() {
   const [period, setPeriod] = useState("august_cumul"); // "august_cumul" | "july" | "august_only"
@@ -182,14 +182,14 @@ export default function TopProductsSection() {
             )}
           </button>
 
-          {/* 엑셀 다운로드 */}
+          {/* 상위품목 전용 엑셀 다운로드 */}
           <button
-            onClick={() => downloadComprehensiveExcel()}
-            className="flex items-center gap-1.5 px-3 py-2 bg-slate-800 hover:bg-slate-900 text-white text-xs font-bold rounded-xl shadow-xs transition-colors cursor-pointer"
-            title="수식이 포함된 엑셀 파일을 다운로드합니다"
+            onClick={() => downloadTopProductsExcel(period, unitMode)}
+            className="flex items-center gap-1.5 px-3 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow-xs transition-colors cursor-pointer"
+            title="기획전 판매 상위 품목 실적 요약 엑셀 파일을 다운로드합니다 (7월 / 8월 순수 / 8월 누적 전 시트 수록)"
           >
-            <Download className="w-3.5 h-3.5 text-emerald-400" />
-            <span>엑셀 다운로드</span>
+            <Download className="w-3.5 h-3.5 text-white" />
+            <span>상위품목 엑셀 다운로드</span>
           </button>
         </div>
       </div>
